@@ -710,6 +710,276 @@
     width: 7px; height: 7px; border-radius: 50%;
     background: var(--k-amber); border: 2px solid #fff;
   }
+
+  /* ════════════════════════════════
+     CONVERSATION FOOTER
+  ════════════════════════════════ */
+  .convo-footer {
+    padding: 12px 20px 16px; background: #fff;
+    border-top: 1px solid var(--k-gray-200);
+    flex-shrink: 0; display: flex; align-items: flex-end; gap: 10px;
+  }
+  .convo-footer-input {
+    flex: 1; border: 1.5px solid var(--k-gray-200); border-radius: 12px;
+    padding: 10px 14px; font-size: 14px; font-family: inherit;
+    resize: none; outline: none; max-height: 120px; line-height: 1.4;
+    color: var(--k-gray-900); transition: border-color 0.15s;
+  }
+  .convo-footer-input:focus { border-color: var(--k-purple); }
+  .convo-footer-send {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: var(--k-purple); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: background 0.15s;
+  }
+  .convo-footer-send:hover { background: var(--k-purple-dark); }
+  .convo-footer-send:disabled { background: var(--k-gray-200); cursor: default; }
+
+  /* Kit tile dual buttons */
+  .kit-tile { cursor: default; }
+  .kit-tile-actions { display: flex; gap: 7px; margin-top: 12px; }
+  .kit-tile-btn {
+    flex: 1; height: 31px; border-radius: 8px; font-size: 12px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.15s;
+  }
+  .kit-tile-btn.view { background: var(--k-gray-100); color: var(--k-gray-700); }
+  .kit-tile-btn.view:hover { background: var(--k-gray-200); }
+  .kit-tile-btn.play { background: var(--k-purple); color: white; }
+  .kit-tile-btn.play:hover { background: var(--k-purple-dark); }
+
+  /* ════════════════════════════════
+     SLIDE PLAYER
+  ════════════════════════════════ */
+  .slide-player {
+    position: fixed; inset: 0; z-index: 200; background: #0a0a14;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s;
+  }
+  .slide-player.open { opacity: 1; pointer-events: all; }
+  .slide-player-bar {
+    height: 52px; background: rgba(255,255,255,0.06);
+    display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0;
+  }
+  .slide-player-title { color: #fff; font-size: 14px; font-weight: 600; flex: 1; }
+  .slide-player-counter { color: rgba(255,255,255,0.5); font-size: 13px; }
+  .slide-player-close {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(255,255,255,0.1); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white; transition: background 0.15s;
+  }
+  .slide-player-close:hover { background: rgba(255,255,255,0.2); }
+  .slide-player-stage {
+    flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px;
+  }
+  .slide {
+    width: 100%; max-width: 900px; background: white; border-radius: 16px;
+    padding: 52px 64px; box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+    display: none; min-height: 420px;
+  }
+  .slide.active { display: flex; flex-direction: column; }
+  .slide-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--k-purple); margin-bottom: 12px;
+  }
+  .slide-title {
+    font-size: 26px; font-weight: 800; color: var(--k-gray-900);
+    line-height: 1.2; margin-bottom: 18px;
+  }
+  .slide-body { font-size: 15.5px; color: var(--k-gray-700); line-height: 1.75; flex: 1; }
+  .slide-body ul { padding-left: 20px; margin-top: 8px; }
+  .slide-body li { margin-bottom: 6px; }
+  .slide-body .s-box {
+    background: var(--k-gray-50); border: 1.5px solid var(--k-gray-200);
+    border-radius: 10px; padding: 18px 22px; margin: 14px 0;
+  }
+  .slide-body .s-box.purple { background: var(--k-purple-light); border-color: var(--k-purple); }
+  .slide-player-nav {
+    height: 72px; background: rgba(255,255,255,0.04);
+    display: flex; align-items: center; justify-content: center; gap: 16px; flex-shrink: 0;
+  }
+  .slide-nav-btn {
+    height: 40px; padding: 0 24px; border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: transparent; color: white; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 8px;
+  }
+  .slide-nav-btn:hover { background: rgba(255,255,255,0.1); }
+  .slide-nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .slide-dots { display: flex; gap: 6px; }
+  .slide-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.25); transition: background 0.2s;
+  }
+  .slide-dot.active { background: var(--k-purple-mid); }
+
+  /* ════════════════════════════════
+     CLASS DETAIL PANEL
+  ════════════════════════════════ */
+  .class-detail-overlay {
+    position: fixed; inset: 0; z-index: 150; background: rgba(0,0,0,0.4);
+    display: flex; align-items: flex-start; justify-content: flex-end;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .class-detail-overlay.open { opacity: 1; pointer-events: all; }
+  .class-detail-panel {
+    width: 440px; height: 100%; background: #fff;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+    display: flex; flex-direction: column;
+    transform: translateX(440px);
+    transition: transform 0.25s cubic-bezier(.4,0,.2,1);
+    overflow: hidden;
+  }
+  .class-detail-overlay.open .class-detail-panel { transform: translateX(0); }
+  .class-detail-header {
+    padding: 18px 20px 14px; border-bottom: 1px solid var(--k-gray-200);
+    display: flex; align-items: flex-start; gap: 10px; flex-shrink: 0;
+  }
+  .class-detail-color-bar {
+    width: 4px; border-radius: 4px; align-self: stretch; flex-shrink: 0;
+  }
+  .class-detail-title { font-size: 18px; font-weight: 700; }
+  .class-detail-sub { font-size: 13px; color: var(--k-gray-500); margin-top: 2px; }
+  .class-detail-close {
+    margin-left: auto; width: 28px; height: 28px; border-radius: 7px;
+    background: var(--k-gray-100); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .class-detail-close:hover { background: var(--k-gray-200); }
+  .class-detail-ai-strip {
+    margin: 12px 16px 0;
+    background: var(--k-purple-light); border-left: 3px solid var(--k-purple);
+    border-radius: 8px; padding: 10px 12px; font-size: 13px; color: var(--k-purple-dark);
+    flex-shrink: 0;
+  }
+  .class-detail-stats {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; padding: 12px 16px 0; flex-shrink: 0;
+  }
+  .class-detail-stat {
+    background: var(--k-gray-50); border: 1.5px solid var(--k-gray-200);
+    border-radius: 10px; padding: 10px; text-align: center;
+  }
+  .class-detail-stat-val { font-size: 22px; font-weight: 800; }
+  .class-detail-stat-label { font-size: 11px; color: var(--k-gray-500); margin-top: 2px; }
+  .class-detail-section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--k-gray-400); padding: 14px 16px 6px; flex-shrink: 0;
+  }
+  .class-detail-student-list { padding: 0 16px; overflow-y: auto; flex: 1; padding-bottom: 8px; }
+  .student-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 0; border-bottom: 1px solid var(--k-gray-100);
+  }
+  .student-row:last-child { border-bottom: none; }
+  .student-avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11.5px; font-weight: 700; color: white; flex-shrink: 0;
+  }
+  .student-name { font-size: 13.5px; font-weight: 500; flex: 1; }
+  .student-mastery-val { font-size: 13px; font-weight: 700; }
+  .student-flag-badge {
+    font-size: 10.5px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
+  }
+  .flag-support { background: #FEE2E2; color: var(--k-red); }
+  .flag-practice { background: #FEF3C7; color: #92400E; }
+  .class-detail-ask-btn {
+    margin: 10px 16px 16px; height: 40px; border-radius: 10px;
+    background: var(--k-purple); color: white; border: none;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    transition: background 0.15s; flex-shrink: 0;
+  }
+  .class-detail-ask-btn:hover { background: var(--k-purple-dark); }
+
+  /* ════════════════════════════════
+     READ MODE
+  ════════════════════════════════ */
+  .read-mode-overlay {
+    position: fixed; inset: 0; z-index: 180; background: #fff;
+    display: flex; flex-direction: column;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .read-mode-overlay.open { opacity: 1; pointer-events: all; }
+  .read-mode-bar {
+    height: 52px; border-bottom: 1px solid var(--k-gray-200);
+    display: flex; align-items: center; padding: 0 20px; gap: 14px; flex-shrink: 0;
+  }
+  .read-mode-bar-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .read-mode-bar-meta { font-size: 12.5px; color: var(--k-gray-500); }
+  .read-mode-play-btn {
+    height: 32px; padding: 0 16px; border-radius: 8px;
+    background: var(--k-purple); color: white; border: none; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s;
+  }
+  .read-mode-play-btn:hover { background: var(--k-purple-dark); }
+  .read-mode-close {
+    width: 32px; height: 32px; border-radius: 8px; background: var(--k-gray-100);
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .read-mode-close:hover { background: var(--k-gray-200); }
+  .read-mode-body { flex: 1; display: flex; overflow: hidden; }
+  .read-mode-toc {
+    width: 210px; border-right: 1px solid var(--k-gray-200);
+    padding: 20px 14px; overflow-y: auto; flex-shrink: 0;
+  }
+  .toc-label {
+    font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .08em; color: var(--k-gray-400); margin-bottom: 10px;
+  }
+  .toc-item {
+    font-size: 13px; color: var(--k-gray-600); padding: 6px 10px;
+    border-radius: 7px; cursor: pointer; margin-bottom: 2px;
+    border-left: 2px solid transparent; transition: all 0.15s;
+  }
+  .toc-item:hover { background: var(--k-gray-50); color: var(--k-gray-900); }
+  .toc-item.active {
+    border-left-color: var(--k-purple); color: var(--k-purple);
+    background: var(--k-purple-light); font-weight: 500;
+  }
+  .read-mode-content {
+    flex: 1; overflow-y: auto; padding: 36px 72px; position: relative;
+  }
+  .read-mode-content h2 {
+    font-size: 20px; font-weight: 700; margin: 32px 0 12px;
+    color: var(--k-gray-900); scroll-margin-top: 20px;
+  }
+  .read-mode-content h2:first-child { margin-top: 0; }
+  .read-mode-content p {
+    font-size: 15px; line-height: 1.78; color: var(--k-gray-700); margin-bottom: 13px;
+  }
+  .read-mode-content ul { padding-left: 20px; margin-bottom: 13px; }
+  .read-mode-content li { font-size: 15px; line-height: 1.78; color: var(--k-gray-700); margin-bottom: 5px; }
+  .read-mode-content .r-box {
+    background: var(--k-gray-50); border: 1.5px solid var(--k-gray-200);
+    border-radius: 11px; padding: 16px 20px; margin: 14px 0; font-size: 15px; line-height: 1.7;
+  }
+  .read-mode-content .r-box.purple {
+    background: var(--k-purple-light); border-color: var(--k-purple);
+  }
+  mark.k-highlight { background: #FEF08A; border-radius: 3px; padding: 1px 2px; }
+  .r-note {
+    background: #FFFBEB; border: 1.5px solid var(--k-amber); border-radius: 8px;
+    padding: 8px 12px; font-size: 12.5px; color: var(--k-gray-700);
+    margin: 8px 0; display: flex; gap: 8px; align-items: flex-start;
+  }
+  .r-note-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .ann-popup {
+    position: fixed; z-index: 400; background: white;
+    border: 1.5px solid var(--k-gray-200); border-radius: 10px; padding: 5px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    display: flex; gap: 4px;
+    opacity: 0; pointer-events: none; transition: opacity 0.12s;
+  }
+  .ann-popup.visible { opacity: 1; pointer-events: all; }
+  .ann-btn {
+    height: 30px; padding: 0 12px; border-radius: 7px;
+    border: none; cursor: pointer; font-size: 12.5px; font-weight: 500; transition: background 0.1s;
+  }
+  .ann-btn.hl { background: #FEF08A; color: #78350F; }
+  .ann-btn.hl:hover { background: #FDE047; }
+  .ann-btn.nt { background: var(--k-purple-light); color: var(--k-purple); }
+  .ann-btn.nt:hover { background: #d8d4f7; }
 </style>
 </head>
 <body>
@@ -877,35 +1147,55 @@
         <span class="kits-badge">✦ Ready for you</span>
       </div>
       <div class="kits-scroll">
-        <div class="kit-tile" onclick="openKit('fractions')">
+        <div class="kit-tile">
           <div class="kit-tile-when">Tomorrow</div>
           <span class="kit-tile-emoji">➗</span>
           <div class="kit-tile-title">Adding Fractions with Unlike Denominators</div>
           <div class="kit-tile-meta">U3 · L4 · 45 min</div>
+          <div class="kit-tile-actions">
+            <button class="kit-tile-btn view" onclick="openKit('fractions')">View Kit</button>
+            <button class="kit-tile-btn play" onclick="launchSlides('fractions')">▶ Play</button>
+          </div>
         </div>
-        <div class="kit-tile" onclick="openKit('number-line')">
+        <div class="kit-tile">
           <div class="kit-tile-when">Monday</div>
           <span class="kit-tile-emoji">📏</span>
           <div class="kit-tile-title">Fractions on a Number Line</div>
           <div class="kit-tile-meta">U3 · L5 · 45 min</div>
+          <div class="kit-tile-actions">
+            <button class="kit-tile-btn view" onclick="openKit('number-line')">View Kit</button>
+            <button class="kit-tile-btn play" onclick="launchSlides('number-line')">▶ Play</button>
+          </div>
         </div>
-        <div class="kit-tile" onclick="openKit('multiplication')">
+        <div class="kit-tile">
           <div class="kit-tile-when">Tuesday</div>
           <span class="kit-tile-emoji">✖️</span>
           <div class="kit-tile-title">Multiplying Fractions</div>
           <div class="kit-tile-meta">U3 · L6 · 50 min</div>
+          <div class="kit-tile-actions">
+            <button class="kit-tile-btn view" onclick="openKit('multiplication')">View Kit</button>
+            <button class="kit-tile-btn play" onclick="launchSlides('multiplication')">▶ Play</button>
+          </div>
         </div>
-        <div class="kit-tile" onclick="openKit('assessment')">
+        <div class="kit-tile">
           <div class="kit-tile-when">Wednesday</div>
           <span class="kit-tile-emoji">📋</span>
           <div class="kit-tile-title">Unit 3 Mid-Unit Check</div>
           <div class="kit-tile-meta">Assessment · 25 min</div>
+          <div class="kit-tile-actions">
+            <button class="kit-tile-btn view" onclick="openKit('assessment')">View Kit</button>
+            <button class="kit-tile-btn play" onclick="launchSlides('assessment')">▶ Preview</button>
+          </div>
         </div>
-        <div class="kit-tile" onclick="openKit('word-problems')">
+        <div class="kit-tile">
           <div class="kit-tile-when">Thursday</div>
           <span class="kit-tile-emoji">📝</span>
           <div class="kit-tile-title">Fraction Word Problems</div>
           <div class="kit-tile-meta">U3 · L7 · 45 min</div>
+          <div class="kit-tile-actions">
+            <button class="kit-tile-btn view" onclick="openKit('word-problems')">View Kit</button>
+            <button class="kit-tile-btn play" onclick="launchSlides('word-problems')">▶ Play</button>
+          </div>
         </div>
       </div>
     </div>
@@ -914,6 +1204,15 @@
   <!-- ═══ CONVERSATION SCREEN ═══ -->
   <div class="screen page-screen hidden" id="screen-convo" style="flex-direction:column">
     <div class="convo-body" id="convoBody"></div>
+    <div class="convo-footer">
+      <textarea class="convo-footer-input" id="convoInput" rows="1"
+        placeholder="Follow up..."
+        oninput="onConvoInput(this)"
+        onkeydown="handleConvoKey(event)"></textarea>
+      <button class="convo-footer-send" id="convoSend" disabled onclick="sendConvoReply()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      </button>
+    </div>
   </div>
 
   <!-- ═══ CLASSES SCREEN ═══ -->
@@ -1242,6 +1541,154 @@
 </div>
 
 <!-- KIT DETAIL OVERLAY -->
+<!-- SLIDE PLAYER -->
+<div class="slide-player" id="slidePlayer">
+  <div class="slide-player-bar">
+    <div class="slide-player-title" id="spTitle">Lesson Slides</div>
+    <div class="slide-player-counter" id="spCounter">1 / 5</div>
+    <button class="slide-player-close" onclick="closeSlidePlayer()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="slide-player-stage" id="spStage">
+    <!-- slides injected here -->
+  </div>
+  <div class="slide-player-nav">
+    <button class="slide-nav-btn" id="spPrev" onclick="prevSlide()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+      Back
+    </button>
+    <div class="slide-dots" id="spDots"></div>
+    <button class="slide-nav-btn" id="spNext" onclick="nextSlide()">
+      Next
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- CLASS DETAIL PANEL -->
+<div class="class-detail-overlay" id="classDetailOverlay" onclick="handleClassDetailClick(event)">
+  <div class="class-detail-panel" id="classDetailPanel">
+    <div class="class-detail-header" id="cdHeader">
+      <div class="class-detail-color-bar" id="cdColorBar"></div>
+      <div>
+        <div class="class-detail-title" id="cdTitle"></div>
+        <div class="class-detail-sub" id="cdSub"></div>
+      </div>
+      <button class="class-detail-close" onclick="closeClassDetail()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="class-detail-ai-strip" id="cdInsight"></div>
+    <div class="class-detail-stats" id="cdStats"></div>
+    <div class="class-detail-section-title">Students</div>
+    <div class="class-detail-student-list" id="cdStudents"></div>
+    <button class="class-detail-ask-btn" id="cdAskBtn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      Ask about this class
+    </button>
+  </div>
+</div>
+
+<!-- READ MODE -->
+<div class="read-mode-overlay" id="readModeOverlay">
+  <div class="read-mode-bar">
+    <div>
+      <div class="read-mode-bar-title">Adding Fractions with Unlike Denominators</div>
+      <div class="read-mode-bar-meta">Unit 3 · Lesson 4 · 4.NF.B.3</div>
+    </div>
+    <button class="read-mode-play-btn" onclick="closeReadMode();launchSlides('fractions')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      Play Lesson
+    </button>
+    <button class="read-mode-close" onclick="closeReadMode()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+  <div class="read-mode-body">
+    <div class="read-mode-toc" id="readToc">
+      <div class="toc-label">In this lesson</div>
+      <div class="toc-item active" onclick="scrollToSection('rs-goal',this)">Learning Goal</div>
+      <div class="toc-item" onclick="scrollToSection('rs-warmup',this)">Warm-Up</div>
+      <div class="toc-item" onclick="scrollToSection('rs-concept',this)">Key Concept</div>
+      <div class="toc-item" onclick="scrollToSection('rs-example',this)">Worked Example</div>
+      <div class="toc-item" onclick="scrollToSection('rs-practice',this)">Try It</div>
+      <div class="toc-item" onclick="scrollToSection('rs-exit',this)">Exit Ticket</div>
+    </div>
+    <div class="read-mode-content" id="readContent">
+      <h2 id="rs-goal">Learning Goal</h2>
+      <p>By the end of this lesson, students will be able to add fractions with unlike denominators using equivalent fractions, and explain why a common denominator is necessary.</p>
+      <div class="r-box purple">
+        <strong>Standard:</strong> 4.NF.B.3 — Understand addition and subtraction of fractions as joining and separating parts referring to the same whole.
+      </div>
+
+      <h2 id="rs-warmup">Warm-Up: The LCM Connection</h2>
+      <p>Before students can add unlike fractions, they need a solid command of Least Common Multiples. This 5-minute warm-up is already pre-loaded in your lesson slides based on last week's exit ticket data — 8 students showed gaps with LCM.</p>
+      <div class="r-box">
+        <strong>Warm-up prompt:</strong> Find the LCM for each pair: (2, 4), (3, 4), (4, 6), (5, 10). Then discuss: why does the LCM matter when we're adding fractions?
+      </div>
+      <p>Suggested facilitation: cold-call two students per problem, then transition with "Today you'll see exactly why LCM matters."</p>
+
+      <h2 id="rs-concept">Key Concept: Why Denominators Must Match</h2>
+      <p>Fractions represent parts of a whole. You can't combine parts unless they're the same size — the denominator tells you the size of each piece.</p>
+      <p>A common misconception (visible in your class data): students add both numerators <em>and</em> both denominators. For example: ½ + ⅓ = 2/5. This seems logical to students who think of fractions as two separate numbers, not as a single quantity.</p>
+      <div class="r-box">
+        <strong>Analogy that works:</strong> "Imagine adding 2 quarters and 3 dimes. You can't say you have 5 coins of the same value — you need a common unit first. Fractions are the same idea."
+      </div>
+      <p>The four-step process:</p>
+      <ul>
+        <li>Find the LCM of the denominators — this is your common denominator</li>
+        <li>Convert both fractions to equivalent fractions with that denominator</li>
+        <li>Add the numerators, keeping the common denominator</li>
+        <li>Simplify the result if possible</li>
+      </ul>
+
+      <h2 id="rs-example">Worked Example: Step by Step</h2>
+      <p>Walk students through this example at the board before partner practice:</p>
+      <div class="r-box" style="font-size:15px;line-height:2.1">
+        <div><strong>Problem:</strong> ½ + ⅓ = ?</div>
+        <div><strong>Step 1:</strong> LCM(2, 3) = 6 → common denominator is 6</div>
+        <div><strong>Step 2:</strong> ½ = 3/6 &nbsp;·&nbsp; ⅓ = 2/6</div>
+        <div><strong>Step 3:</strong> 3/6 + 2/6 = 5/6</div>
+        <div><strong>Step 4:</strong> Can 5/6 be simplified? No — GCF(5,6) = 1.</div>
+        <div style="margin-top:8px;color:var(--k-purple);font-weight:600">Answer: 5/6 ✓</div>
+      </div>
+      <p>Now try together: ¾ + ⅙ = ?  Give students 90 seconds, then reveal answer (11/12 → already simplified).</p>
+
+      <h2 id="rs-practice">Try It: Partner Practice</h2>
+      <p>Students work in pairs using the fraction strips handout. Pairs who finish early move to the challenge problems on the back.</p>
+      <div class="r-box">
+        <strong>Problem set (scaffold → challenge):</strong>
+        <ul style="margin-top:8px">
+          <li>½ + ¼ = ?</li>
+          <li>⅓ + ⅙ = ?</li>
+          <li>¾ + ⅛ = ?</li>
+          <li>⅖ + 3/10 = ?</li>
+          <li>★ Maya ran ⅔ mile before school and ¾ mile after. How far total?</li>
+        </ul>
+      </div>
+      <p>Circulate and watch for the adding-denominators error. When you see it, ask: "How big is each piece? Are the pieces the same size yet?" — don't correct directly.</p>
+
+      <h2 id="rs-exit">Exit Ticket</h2>
+      <p>Collect exit tickets at the door. Results auto-score in Kiddom within 1 minute of student submission.</p>
+      <div class="r-box">
+        <ol>
+          <li>½ + ¼ = ?</li>
+          <li>⅔ + ⅙ = ?</li>
+          <li>★ A pizza is cut into thirds. Maria ate ⅓ and shared ⅙ with a friend. What fraction did she give away in total?</li>
+        </ol>
+      </div>
+      <p>If more than 6 students miss problem 3, open with a real-world word problem warm-up at the start of tomorrow's lesson. Kiddom will flag this automatically in your Class Report.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ANNOTATION POPUP -->
+<div class="ann-popup" id="annPopup">
+  <button class="ann-btn hl" onclick="applyHighlight()">Highlight</button>
+  <button class="ann-btn nt" onclick="applyNote()">Add Note</button>
+</div>
+
 <div class="kit-overlay" id="kitOverlay" onclick="closeKitClick(event)">
   <div class="kit-detail" id="kitDetail"></div>
 </div>
@@ -1288,17 +1735,132 @@ function showNav(el) {
   document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
   el.classList.add('active');
 }
+const classData = {
+  '1st Period': {
+    color: '#5B4FCF', name: 'Math 4', grade: '4th Grade',
+    students: 27, mastery: 78, onTrack: 17, needsPractice: 7, needsSupport: 3,
+    insight: '✦ Strong unit overall. 3 students need extra support on 4.NF.B.4 — multiplying fractions.',
+    list: [
+      { name: 'Aaliyah Chen',    mastery: 92, flag: null },
+      { name: 'Brandon Davis',   mastery: 85, flag: null },
+      { name: 'Carlos Ruiz',     mastery: 78, flag: null },
+      { name: 'Diana Patel',     mastery: 71, flag: null },
+      { name: 'Ethan Moore',     mastery: 65, flag: 'practice' },
+      { name: 'Fatima Ibrahim',  mastery: 52, flag: 'support' },
+      { name: 'Grace Kim',       mastery: 90, flag: null },
+      { name: 'Henry Zhang',     mastery: 82, flag: null },
+    ]
+  },
+  '2nd Period': {
+    color: '#0EA5A0', name: 'Math 4', grade: '4th Grade',
+    students: 25, mastery: 83, onTrack: 18, needsPractice: 5, needsSupport: 2,
+    insight: '✦ Highest mastery of your Math 4 sections. 2 students need support with fraction models.',
+    list: [
+      { name: 'Amara Okafor',  mastery: 95, flag: null },
+      { name: 'Ben Nguyen',    mastery: 88, flag: null },
+      { name: 'Clara Simmons', mastery: 81, flag: null },
+      { name: 'David Lee',     mastery: 79, flag: null },
+      { name: 'Eva Martins',   mastery: 60, flag: 'practice' },
+      { name: 'Frank Torres',  mastery: 48, flag: 'support' },
+      { name: 'Gina Abbott',   mastery: 92, flag: null },
+    ]
+  },
+  '3rd Period': {
+    color: '#F59E0B', name: 'Math 4', grade: '4th Grade',
+    students: 28, mastery: 71, onTrack: 14, needsPractice: 9, needsSupport: 5,
+    insight: '✦ 5 students need support with equivalent fractions (Unit 2 prerequisite). Aisha, Marcus, and Devon show the most significant gaps.',
+    list: [
+      { name: 'Aisha Williams',  mastery: 48, flag: 'support' },
+      { name: 'Marcus Thompson', mastery: 52, flag: 'support' },
+      { name: 'Devon Jackson',   mastery: 55, flag: 'support' },
+      { name: 'Elena Rodriguez', mastery: 69, flag: 'practice' },
+      { name: 'Felix Chang',     mastery: 72, flag: null },
+      { name: "Grace O'Brien",   mastery: 88, flag: null },
+      { name: 'Hector Morales',  mastery: 91, flag: null },
+      { name: 'Imani Foster',    mastery: 76, flag: null },
+      { name: 'James Park',      mastery: 63, flag: 'practice' },
+      { name: 'Kayla Brown',     mastery: 85, flag: null },
+    ]
+  },
+  '4th Period': {
+    color: '#3B82F6', name: 'Math 4', grade: '4th Grade',
+    students: 26, mastery: 80, onTrack: 16, needsPractice: 7, needsSupport: 3,
+    insight: '✦ On track for the unit. 3 students are close to the support threshold — watch exit ticket data today.',
+    list: [
+      { name: 'Alex Kim',      mastery: 84, flag: null },
+      { name: 'Brianna White', mastery: 77, flag: null },
+      { name: 'Chris Malone',  mastery: 91, flag: null },
+      { name: 'Dani Flores',   mastery: 64, flag: 'practice' },
+      { name: 'Erik Johnson',  mastery: 58, flag: 'support' },
+      { name: 'Fiona Grant',   mastery: 82, flag: null },
+      { name: 'George Yee',    mastery: 73, flag: null },
+    ]
+  }
+};
+
+const avatarColors = ['#5B4FCF','#0EA5A0','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EF4444','#EC4899'];
+
 function goClassDetail(period) {
-  // Could navigate into class detail — for now just show assistant response
   closeSearchOverlay();
-  if (currentScreen !== 'classes') goPage('classes');
-  // highlight card
-  setTimeout(() => {
-    document.querySelectorAll('.class-card').forEach(c => c.classList.remove('highlighted'));
-    const num = period.charAt(0);
-    document.getElementById('class-' + num)?.classList.add('highlighted');
-    document.getElementById('class-' + num)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 200);
+  const data = classData[period];
+  if (!data) {
+    // fallback: navigate to classes and highlight
+    if (currentScreen !== 'classes') goPage('classes');
+    setTimeout(() => {
+      document.querySelectorAll('.class-card').forEach(c => c.classList.remove('highlighted'));
+      const num = period.charAt(0);
+      document.getElementById('class-' + num)?.classList.add('highlighted');
+      document.getElementById('class-' + num)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 200);
+    return;
+  }
+  // Populate panel
+  document.getElementById('cdColorBar').style.cssText = `background:${data.color};width:4px;border-radius:4px;align-self:stretch;flex-shrink:0`;
+  document.getElementById('cdTitle').textContent = `${period} — ${data.name}`;
+  document.getElementById('cdSub').textContent = `${data.grade} · ${data.students} students · Unit 3 in progress`;
+  document.getElementById('cdInsight').textContent = data.insight;
+  document.getElementById('cdStats').innerHTML = `
+    <div class="class-detail-stat">
+      <div class="class-detail-stat-val" style="color:var(--k-green)">${data.onTrack}</div>
+      <div class="class-detail-stat-label">On track</div>
+    </div>
+    <div class="class-detail-stat">
+      <div class="class-detail-stat-val" style="color:var(--k-amber)">${data.needsPractice}</div>
+      <div class="class-detail-stat-label">Needs practice</div>
+    </div>
+    <div class="class-detail-stat">
+      <div class="class-detail-stat-val" style="color:var(--k-red)">${data.needsSupport}</div>
+      <div class="class-detail-stat-label">Needs support</div>
+    </div>`;
+  const masteryColor = data.mastery >= 80 ? 'var(--k-green)' : data.mastery >= 70 ? 'var(--k-amber)' : 'var(--k-red)';
+  document.getElementById('cdStudents').innerHTML = data.list.map((s, i) => {
+    const initials = s.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+    const color = avatarColors[i % avatarColors.length];
+    const mastColor = s.mastery >= 80 ? 'var(--k-green)' : s.mastery >= 65 ? 'var(--k-amber)' : 'var(--k-red)';
+    const flagHtml = s.flag === 'support'
+      ? '<span class="student-flag-badge flag-support">Needs support</span>'
+      : s.flag === 'practice'
+        ? '<span class="student-flag-badge flag-practice">Needs practice</span>'
+        : '';
+    return `<div class="student-row">
+      <div class="student-avatar" style="background:${color}">${initials}</div>
+      <div class="student-name">${s.name}</div>
+      ${flagHtml}
+      <div class="student-mastery-val" style="color:${mastColor}">${s.mastery}%</div>
+    </div>`;
+  }).join('');
+  document.getElementById('cdAskBtn').onclick = () => {
+    closeClassDetail();
+    const q = `Tell me about ${period} — who needs support?`;
+    if (!convoActive) sendMessage(q); else { appendUserMsg(q); setTimeout(() => appendAIResponse(q), 900); }
+  };
+  document.getElementById('classDetailOverlay').classList.add('open');
+}
+function closeClassDetail() {
+  document.getElementById('classDetailOverlay').classList.remove('open');
+}
+function handleClassDetailClick(e) {
+  if (e.target === document.getElementById('classDetailOverlay')) closeClassDetail();
 }
 
 // ════════════════════════════════
@@ -1930,7 +2492,9 @@ function openKit(id) {
     </div>
     <div class="kit-footer">
       <button class="kit-btn secondary" onclick="closeKitDirect()">Close</button>
-      <button class="kit-btn primary" onclick="askKit('${kit.title}')">Ask about this lesson</button>
+      <button class="kit-btn" style="background:var(--k-gray-100);color:var(--k-gray-700);flex:0.8" onclick="closeKitDirect();openReadMode()">Read</button>
+      <button class="kit-btn" style="background:var(--k-teal);color:white" onclick="closeKitDirect();launchSlides('${id}')">▶ Play Lesson</button>
+      <button class="kit-btn primary" onclick="askKit('${kit.title}')">Ask</button>
     </div>`;
   document.getElementById('kitOverlay').classList.add('open');
 }
@@ -1953,6 +2517,285 @@ function askKit(title) {
   if (!convoActive) { sendMessage(q); }
   else { appendUserMsg(q); setTimeout(() => appendAIResponse(q), 900); }
 }
+
+// ════════════════════════════════
+// CONVERSATION REPLY INPUT
+// ════════════════════════════════
+function onConvoInput(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('convoSend').disabled = el.value.trim() === '';
+}
+function handleConvoKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const val = document.getElementById('convoInput').value.trim();
+    if (val) { sendConvoReply(); }
+  }
+}
+function sendConvoReply() {
+  const el = document.getElementById('convoInput');
+  const val = el.value.trim();
+  if (!val) return;
+  el.value = '';
+  el.style.height = 'auto';
+  document.getElementById('convoSend').disabled = true;
+  appendUserMsg(val);
+  setTimeout(() => appendAIResponse(val), 900);
+}
+
+// ════════════════════════════════
+// SLIDE PLAYER
+// ════════════════════════════════
+const slideData = {
+  fractions: {
+    title: 'Adding Fractions with Unlike Denominators',
+    slides: [
+      {
+        label: 'Learning Objective · U3 L4',
+        title: "Today's Goal",
+        body: `<p>By the end of class, students will be able to:</p>
+          <ul>
+            <li>Explain why a common denominator is required before adding fractions</li>
+            <li>Use fraction models to find equivalent fractions</li>
+            <li>Add fractions with unlike denominators and simplify the result</li>
+          </ul>
+          <div class="s-box purple" style="margin-top:18px">
+            <strong>Standard:</strong> 4.NF.B.3 — Understand addition and subtraction of fractions as joining and separating parts referring to the same whole.
+          </div>`
+      },
+      {
+        label: 'Warm-Up · 5 min',
+        title: 'LCM Quick Drill',
+        body: `<p>Find the Least Common Multiple for each pair. Call on students after 60 seconds.</p>
+          <div class="s-box" style="display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:18px;font-weight:700;text-align:center;padding:24px 22px">
+            <div>LCM(2, 4) = ?</div>
+            <div>LCM(3, 4) = ?</div>
+            <div>LCM(4, 6) = ?</div>
+            <div>LCM(5, 10) = ?</div>
+          </div>
+          <p style="color:var(--k-purple);font-weight:500;margin-top:14px">Discussion: "Why will LCM matter in today's lesson? Think about it as you work."</p>`
+      },
+      {
+        label: 'Key Concept',
+        title: 'Why Denominators Must Match',
+        body: `<p>You can't add fractions until the pieces are the same size. The denominator tells you the size of each piece.</p>
+          <div class="s-box" style="text-align:center;font-size:22px;font-weight:800;padding:22px;color:var(--k-red)">½ + ⅓ ≠ 2/5</div>
+          <p><strong>Think of it like money:</strong> you can't add quarters and dimes without converting them to the same unit first.</p>
+          <p><strong>The four steps:</strong></p>
+          <ol style="padding-left:20px;line-height:2">
+            <li>Find the LCM of the denominators</li>
+            <li>Convert both fractions using equivalent fractions</li>
+            <li>Add the numerators — keep the denominator</li>
+            <li>Simplify if possible</li>
+          </ol>`
+      },
+      {
+        label: 'Worked Example',
+        title: 'Solve Together: ½ + ⅓',
+        body: `<div class="s-box" style="font-size:15.5px;line-height:2.2">
+            <div><strong>Step 1:</strong> LCM(2, 3) = 6 &nbsp;→&nbsp; common denominator is <strong>6</strong></div>
+            <div><strong>Step 2:</strong> ½ = 3/6 &nbsp;·&nbsp; ⅓ = 2/6</div>
+            <div><strong>Step 3:</strong> 3/6 + 2/6 = <strong style="color:var(--k-purple)">5/6</strong></div>
+            <div><strong>Step 4:</strong> Can we simplify 5/6? No — GCF(5, 6) = 1.</div>
+          </div>
+          <p style="margin-top:18px;font-size:16px">Now try together: <strong>¾ + ⅙ = ?</strong> &nbsp; Give students 90 seconds.</p>`
+      },
+      {
+        label: 'Exit Ticket · 4.NF.B.3',
+        title: 'Check for Understanding',
+        body: `<p>Students complete individually on their recording sheet. Collect at the door.</p>
+          <div class="s-box" style="font-size:16px;line-height:2.3;font-weight:600">
+            <div>1. ½ + ¼ = ?</div>
+            <div>2. ⅔ + ⅙ = ?</div>
+            <div style="color:var(--k-purple)">3. ★ A pizza is cut into thirds. Maria ate ⅓ and shared ⅙ with a friend. What fraction did she give away in total?</div>
+          </div>
+          <p style="color:var(--k-gray-500);font-size:13.5px;margin-top:16px">Results auto-score in Kiddom within 1 minute of submission. Check your Class Report after class.</p>`
+      }
+    ]
+  }
+};
+
+let currentSlideKit = null;
+let currentSlideIdx = 0;
+
+function getSlides(id) {
+  if (slideData[id]) return slideData[id];
+  const kit = kits[id];
+  const title = kit?.title || 'Lesson Slides';
+  return {
+    title,
+    slides: [
+      { label: 'Lesson Start', title, body: '<p>Slides are loaded and ready.</p><p style="margin-top:14px;color:var(--k-gray-500)">Use this time to distribute materials and take attendance.</p>' },
+      { label: 'Warm-Up', title: 'Opening Activity', body: '<p>Have students work independently for 3 minutes, then discuss with a partner.</p>' },
+      { label: 'Key Concept', title: 'Core Instruction', body: '<p>Model the concept at the board. Ask questions to check for understanding before moving to practice.</p>' },
+      { label: 'Partner Practice', title: 'Try It Together', body: '<p>Students work in pairs. Circulate and listen for common errors. Call on 2–3 pairs to share their thinking.</p>' },
+      { label: 'Exit Ticket', title: 'Wrap Up', body: '<p>Collect exit tickets at the door. Results will be available in your Class Report within minutes.</p>' },
+    ]
+  };
+}
+
+function launchSlides(id) {
+  closeKitDirect();
+  const data = getSlides(id);
+  currentSlideKit = data;
+  currentSlideIdx = 0;
+  document.getElementById('spTitle').textContent = data.title;
+  // Build slides
+  const stage = document.getElementById('spStage');
+  stage.innerHTML = data.slides.map((s, i) => `
+    <div class="slide${i === 0 ? ' active' : ''}" id="sp-slide-${i}">
+      <div class="slide-label">${s.label}</div>
+      <div class="slide-title">${s.title}</div>
+      <div class="slide-body">${s.body}</div>
+    </div>`).join('');
+  // Build dots
+  document.getElementById('spDots').innerHTML = data.slides.map((_, i) =>
+    `<div class="slide-dot${i === 0 ? ' active' : ''}" id="sp-dot-${i}"></div>`).join('');
+  updateSlideNav();
+  document.getElementById('slidePlayer').classList.add('open');
+}
+
+function closeSlidePlayer() {
+  document.getElementById('slidePlayer').classList.remove('open');
+}
+
+function nextSlide() {
+  if (!currentSlideKit || currentSlideIdx >= currentSlideKit.slides.length - 1) return;
+  document.getElementById(`sp-slide-${currentSlideIdx}`)?.classList.remove('active');
+  document.getElementById(`sp-dot-${currentSlideIdx}`)?.classList.remove('active');
+  currentSlideIdx++;
+  document.getElementById(`sp-slide-${currentSlideIdx}`)?.classList.add('active');
+  document.getElementById(`sp-dot-${currentSlideIdx}`)?.classList.add('active');
+  updateSlideNav();
+}
+
+function prevSlide() {
+  if (!currentSlideKit || currentSlideIdx <= 0) return;
+  document.getElementById(`sp-slide-${currentSlideIdx}`)?.classList.remove('active');
+  document.getElementById(`sp-dot-${currentSlideIdx}`)?.classList.remove('active');
+  currentSlideIdx--;
+  document.getElementById(`sp-slide-${currentSlideIdx}`)?.classList.add('active');
+  document.getElementById(`sp-dot-${currentSlideIdx}`)?.classList.add('active');
+  updateSlideNav();
+}
+
+function updateSlideNav() {
+  const total = currentSlideKit?.slides.length || 1;
+  document.getElementById('spCounter').textContent = `${currentSlideIdx + 1} / ${total}`;
+  document.getElementById('spPrev').disabled = currentSlideIdx === 0;
+  document.getElementById('spNext').disabled = currentSlideIdx === total - 1;
+}
+
+// Keyboard nav for slide player
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('slidePlayer').classList.contains('open')) return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') prevSlide();
+  if (e.key === 'Escape') closeSlidePlayer();
+});
+
+// ════════════════════════════════
+// READ MODE
+// ════════════════════════════════
+function openReadMode() {
+  document.getElementById('readModeOverlay').classList.add('open');
+  // Reset TOC active state
+  document.querySelectorAll('.toc-item').forEach((el, i) => el.classList.toggle('active', i === 0));
+  document.getElementById('readContent').scrollTop = 0;
+  setupReadModeListeners();
+}
+
+function closeReadMode() {
+  document.getElementById('readModeOverlay').classList.remove('open');
+  hideAnnPopup();
+}
+
+function scrollToSection(id, tocEl) {
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.toc-item').forEach(el => el.classList.remove('active'));
+  tocEl.classList.add('active');
+}
+
+// Track active section via scroll
+function setupReadModeListeners() {
+  const content = document.getElementById('readContent');
+  const sections = ['rs-goal','rs-warmup','rs-concept','rs-example','rs-practice','rs-exit'];
+  const tocItems = document.querySelectorAll('.toc-item');
+  content.onscroll = () => {
+    let active = 0;
+    sections.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top < 120) active = i;
+    });
+    tocItems.forEach((el, i) => el.classList.toggle('active', i === active));
+  };
+  // Text selection → annotation popup
+  content.onmouseup = () => {
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed || !sel.toString().trim()) { hideAnnPopup(); return; }
+    const range = sel.getRangeAt(0);
+    const rect = range.getBoundingClientRect();
+    showAnnPopup(rect.left + rect.width / 2 - 60, rect.top - 50);
+  };
+}
+
+let savedRange = null;
+
+function showAnnPopup(x, y) {
+  const sel = window.getSelection();
+  if (sel && !sel.isCollapsed) savedRange = sel.getRangeAt(0).cloneRange();
+  const popup = document.getElementById('annPopup');
+  popup.style.left = Math.max(8, x) + 'px';
+  popup.style.top = Math.max(8, y) + 'px';
+  popup.classList.add('visible');
+}
+
+function hideAnnPopup() {
+  document.getElementById('annPopup').classList.remove('visible');
+  savedRange = null;
+}
+
+function applyHighlight() {
+  if (!savedRange) return;
+  try {
+    const mark = document.createElement('mark');
+    mark.className = 'k-highlight';
+    savedRange.surroundContents(mark);
+  } catch(e) {
+    // partial selection across nodes — wrap what we can
+  }
+  window.getSelection()?.removeAllRanges();
+  hideAnnPopup();
+}
+
+function applyNote() {
+  if (!savedRange) return;
+  const text = window.prompt('Add a note:');
+  if (!text) { hideAnnPopup(); return; }
+  try {
+    const mark = document.createElement('mark');
+    mark.className = 'k-highlight';
+    savedRange.surroundContents(mark);
+  } catch(e) {}
+  // Insert note div after the parent paragraph
+  const container = savedRange.commonAncestorContainer;
+  let para = container.nodeType === 3 ? container.parentNode : container;
+  while (para && para.tagName !== 'P' && para.tagName !== 'LI' && para.tagName !== 'DIV') para = para.parentNode;
+  if (para) {
+    const note = document.createElement('div');
+    note.className = 'r-note';
+    note.innerHTML = `<span class="r-note-icon">✏️</span><span>${escHtml(text)}</span>`;
+    para.insertAdjacentElement('afterend', note);
+  }
+  window.getSelection()?.removeAllRanges();
+  hideAnnPopup();
+}
+
+document.addEventListener('mousedown', e => {
+  const popup = document.getElementById('annPopup');
+  if (popup.classList.contains('visible') && !popup.contains(e.target)) hideAnnPopup();
+});
 </script>
 </body>
 </html>
