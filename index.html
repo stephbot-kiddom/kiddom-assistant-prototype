@@ -2492,6 +2492,7 @@ function openKit(id) {
     </div>
     <div class="kit-footer">
       <button class="kit-btn secondary" onclick="closeKitDirect()">Close</button>
+      <button class="kit-btn" style="background:var(--k-gray-100);color:var(--k-gray-700);flex:0.8" onclick="window.print()">Print</button>
       <button class="kit-btn" style="background:var(--k-gray-100);color:var(--k-gray-700);flex:0.8" onclick="closeKitDirect();openReadMode()">Read</button>
       <button class="kit-btn" style="background:var(--k-teal);color:white" onclick="closeKitDirect();launchSlides('${id}')">▶ Play Lesson</button>
       <button class="kit-btn primary" onclick="askKit('${kit.title}')">Ask</button>
