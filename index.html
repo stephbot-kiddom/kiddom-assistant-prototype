@@ -1,0 +1,1958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kiddom Assistant — Prototype</title>
+<style>
+  :root {
+    --k-purple: #5B4FCF;
+    --k-purple-light: #EBE9FA;
+    --k-purple-mid: #7B70D8;
+    --k-purple-dark: #3D2EA0;
+    --k-teal: #0EA5A0;
+    --k-amber: #F59E0B;
+    --k-green: #10B981;
+    --k-red: #EF4444;
+    --k-blue: #3B82F6;
+    --k-gray-50: #F9FAFB;
+    --k-gray-100: #F3F4F6;
+    --k-gray-200: #E5E7EB;
+    --k-gray-300: #D1D5DB;
+    --k-gray-400: #9CA3AF;
+    --k-gray-500: #6B7280;
+    --k-gray-600: #4B5563;
+    --k-gray-700: #374151;
+    --k-gray-800: #1F2937;
+    --k-gray-900: #111827;
+    --sidebar-w: 260px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+    background: #fff;
+    color: var(--k-gray-900);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ════════════════════════════════
+     NAV
+  ════════════════════════════════ */
+  .nav {
+    height: 52px;
+    border-bottom: 1px solid var(--k-gray-200);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 4px;
+    flex-shrink: 0;
+    background: #fff;
+    z-index: 20;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 7px;
+    font-weight: 700; font-size: 16px; color: var(--k-purple);
+    letter-spacing: -0.3px; margin-right: 8px; cursor: pointer; flex-shrink: 0;
+  }
+  .nav-logo-icon {
+    width: 27px; height: 27px; border-radius: 7px;
+    background: var(--k-purple);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nav-logo-icon svg { fill: white; }
+  .nav-link {
+    padding: 5px 11px; border-radius: 7px; font-size: 13.5px;
+    color: var(--k-gray-600); cursor: pointer; font-weight: 500;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .nav-link:hover { background: var(--k-gray-100); color: var(--k-gray-900); }
+  .nav-link.active { background: var(--k-purple-light); color: var(--k-purple); font-weight: 600; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .nav-class-chip {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--k-gray-100); border-radius: 16px;
+    padding: 4px 10px 4px 8px; font-size: 12.5px; color: var(--k-gray-600);
+    cursor: pointer; font-weight: 500;
+  }
+  .nav-class-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--k-teal); }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--k-purple); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+
+  /* ════════════════════════════════
+     PERSISTENT SEARCH BAR
+  ════════════════════════════════ */
+  .pbar {
+    background: #fff;
+    border-bottom: 1px solid var(--k-gray-200);
+    padding: 9px 20px;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
+  }
+  .pbar.visible {
+    opacity: 1;
+    max-height: 60px;
+    padding: 9px 20px;
+  }
+  .pbar-history-btn {
+    display: flex; align-items: center; gap: 5px;
+    padding: 6px 11px; border-radius: 16px; font-size: 12.5px;
+    border: 1.5px solid var(--k-gray-200); background: #fff;
+    color: var(--k-gray-600); cursor: pointer; font-weight: 500;
+    white-space: nowrap; transition: all 0.15s; flex-shrink: 0;
+  }
+  .pbar-history-btn:hover { border-color: var(--k-purple); color: var(--k-purple); }
+  .pbar-input-shell {
+    flex: 1; display: flex; align-items: center; gap: 8px;
+    background: var(--k-gray-100); border-radius: 24px;
+    padding: 8px 14px;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+    cursor: text;
+  }
+  .pbar-input-shell:hover { border-color: var(--k-gray-300); }
+  .pbar-input {
+    border: none; background: transparent; outline: none;
+    font-size: 13.5px; color: var(--k-gray-700); flex: 1;
+    font-family: inherit; cursor: text;
+  }
+  .pbar-input::placeholder { color: var(--k-gray-400); }
+  .pbar-input-icon { color: var(--k-gray-400); flex-shrink: 0; }
+  .pbar-kbd {
+    font-size: 10.5px; color: var(--k-gray-400);
+    background: var(--k-gray-200); border-radius: 4px;
+    padding: 1px 5px; font-family: monospace; flex-shrink: 0;
+  }
+
+  /* ════════════════════════════════
+     SEARCH SPOTLIGHT OVERLAY
+  ════════════════════════════════ */
+  .search-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(15,15,25,0.5);
+    backdrop-filter: blur(3px);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .search-overlay.open { opacity: 1; pointer-events: all; }
+  .search-panel {
+    width: 600px; max-width: calc(100vw - 32px);
+    background: #fff; border-radius: 18px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.22), 0 4px 20px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transform: translateY(-12px) scale(0.98);
+    transition: transform 0.22s cubic-bezier(0.34,1.3,0.64,1);
+  }
+  .search-overlay.open .search-panel { transform: translateY(0) scale(1); }
+  .search-panel-input-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--k-gray-200);
+  }
+  .search-panel-icon { color: var(--k-purple); flex-shrink: 0; }
+  .search-panel-input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 17px; color: var(--k-gray-900); font-family: inherit;
+  }
+  .search-panel-input::placeholder { color: var(--k-gray-400); }
+  .search-panel-esc {
+    font-size: 11px; color: var(--k-gray-400);
+    background: var(--k-gray-100); padding: 2px 7px;
+    border-radius: 5px; font-family: monospace; cursor: pointer; flex-shrink: 0;
+  }
+  .search-panel-body { padding: 12px 0; max-height: 420px; overflow-y: auto; }
+  .search-section-label {
+    padding: 4px 18px 6px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--k-gray-400);
+  }
+  .search-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 9px 18px; cursor: pointer;
+    transition: background 0.1s;
+  }
+  .search-row:hover { background: var(--k-gray-50); }
+  .search-row.highlighted { background: var(--k-purple-light); }
+  .search-row-icon {
+    width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 15px;
+  }
+  .search-row-text { flex: 1; }
+  .search-row-title { font-size: 13.5px; font-weight: 500; color: var(--k-gray-800); }
+  .search-row-sub { font-size: 12px; color: var(--k-gray-400); margin-top: 1px; }
+  .search-row-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+  }
+  .tag-nav { background: var(--k-purple-light); color: var(--k-purple); }
+  .tag-curriculum { background: #EFF6FF; color: var(--k-blue); }
+  .tag-ask { background: #F0FDF4; color: var(--k-green); }
+  .search-divider { height: 1px; background: var(--k-gray-100); margin: 8px 0; }
+  .search-quick-actions {
+    display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 18px 4px;
+  }
+  .search-quick {
+    padding: 7px 13px; border-radius: 18px; font-size: 13px; font-weight: 500;
+    border: 1.5px solid var(--k-gray-200); background: #fff;
+    color: var(--k-gray-700); cursor: pointer; transition: all 0.15s;
+  }
+  .search-quick:hover { border-color: var(--k-purple); color: var(--k-purple); background: var(--k-purple-light); }
+  .search-quick.featured { border-color: var(--k-purple-mid); color: var(--k-purple); background: var(--k-purple-light); font-weight: 600; }
+
+  /* ════════════════════════════════
+     LOADING BAR
+  ════════════════════════════════ */
+  .loading-bar {
+    height: 2px;
+    background: linear-gradient(90deg, var(--k-purple) 0%, var(--k-teal) 50%, var(--k-purple) 100%);
+    background-size: 200% 100%;
+    animation: loadingAnim 1.4s ease infinite;
+    opacity: 0; transition: opacity 0.2s; flex-shrink: 0;
+  }
+  .loading-bar.active { opacity: 1; }
+  @keyframes loadingAnim { 0% { background-position: 0% 0%; } 100% { background-position: 200% 0%; } }
+
+  /* ════════════════════════════════
+     MAIN
+  ════════════════════════════════ */
+  .main {
+    flex: 1; display: flex; overflow: hidden; position: relative;
+  }
+
+  /* ════════════════════════════════
+     SIDEBAR (history)
+  ════════════════════════════════ */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--k-gray-50);
+    border-right: 1px solid var(--k-gray-200);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+    transform: translateX(calc(-1 * var(--sidebar-w)));
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    position: absolute; left: 0; top: 0; bottom: 0; z-index: 10;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-header {
+    padding: 14px 16px 10px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--k-gray-400);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .sidebar-x { cursor: pointer; color: var(--k-gray-400); padding: 3px; }
+  .sidebar-x:hover { color: var(--k-gray-700); }
+  .sidebar-section { padding: 0 8px 4px; }
+  .sidebar-label {
+    padding: 6px 8px; font-size: 11px; font-weight: 600;
+    color: var(--k-gray-400); text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .sidebar-item {
+    padding: 8px 10px; border-radius: 8px; font-size: 13px;
+    color: var(--k-gray-700); cursor: pointer;
+    display: flex; align-items: flex-start; gap: 8px; transition: background 0.1s;
+  }
+  .sidebar-item:hover { background: var(--k-gray-200); }
+  .sidebar-item.active { background: var(--k-purple-light); color: var(--k-purple); }
+  .sidebar-item-icon { flex-shrink: 0; margin-top: 1px; opacity: 0.55; }
+  .sidebar-item-title { font-weight: 500; line-height: 1.3; font-size: 13px; }
+  .sidebar-item-meta { font-size: 11.5px; color: var(--k-gray-400); margin-top: 1px; }
+  .sidebar-divider { height: 1px; background: var(--k-gray-200); margin: 6px 8px; }
+
+  /* ════════════════════════════════
+     SIDEBAR TOGGLE
+  ════════════════════════════════ */
+  .sidebar-toggle {
+    position: absolute; left: 14px; top: 14px; z-index: 8;
+    width: 30px; height: 30px; border-radius: 7px;
+    background: #fff; border: 1.5px solid var(--k-gray-200);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: all 0.15s;
+    opacity: 0; pointer-events: none; color: var(--k-gray-600);
+  }
+  .sidebar-toggle.visible { opacity: 1; pointer-events: all; }
+  .sidebar-toggle:hover { border-color: var(--k-purple); color: var(--k-purple); background: var(--k-purple-light); }
+
+  /* ════════════════════════════════
+     HOME SCREEN
+  ════════════════════════════════ */
+  .screen {
+    position: absolute; inset: 0;
+    overflow-y: auto;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+  .screen.hidden { opacity: 0; pointer-events: none; transform: scale(0.99); }
+
+  .home-screen {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: flex-start;
+    padding: 52px 24px 40px;
+  }
+
+  .home-graphic {
+    margin-bottom: 22px;
+    width: 72px; height: 72px; border-radius: 20px;
+    background: linear-gradient(135deg, var(--k-purple-light) 0%, #DDD8F8 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .home-graphic::before {
+    content: '';
+    position: absolute; inset: -10px;
+    background: radial-gradient(circle, rgba(91,79,207,0.1) 0%, transparent 70%);
+    border-radius: 30px;
+  }
+  .home-star {
+    position: absolute; top: -5px; right: -9px;
+    color: var(--k-purple); font-size: 14px;
+    animation: twinkle 2.5s ease-in-out infinite;
+  }
+  .home-star2 {
+    position: absolute; top: 9px; right: -20px;
+    color: var(--k-purple-mid); font-size: 9px;
+    animation: twinkle 2.5s 0.8s ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:0.35; transform:scale(0.75); }
+  }
+
+  .home-greeting {
+    font-size: 28px; font-weight: 700; color: var(--k-gray-900);
+    text-align: center; margin-bottom: 6px; letter-spacing: -0.5px;
+  }
+  .home-subtitle {
+    font-size: 15px; color: var(--k-gray-500);
+    text-align: center; margin-bottom: 32px;
+  }
+
+  /* BIG input */
+  .home-input-wrap {
+    width: 100%; max-width: 620px;
+    background: #fff; border-radius: 20px;
+    border: 2px solid var(--k-gray-200);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 16px;
+  }
+  .home-input-wrap:focus-within {
+    border-color: var(--k-purple);
+    box-shadow: 0 0 0 5px rgba(91,79,207,0.09), 0 4px 24px rgba(0,0,0,0.07);
+  }
+  .home-input-row {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 20px 20px 12px;
+  }
+  .home-input-icon { color: var(--k-purple-mid); flex-shrink: 0; margin-top: 3px; }
+  .home-input {
+    flex: 1; border: none; outline: none; background: transparent;
+    font-size: 17px; color: var(--k-gray-800); font-family: inherit;
+    resize: none; height: 52px; line-height: 1.5;
+  }
+  .home-input::placeholder { color: var(--k-gray-400); }
+  .home-input-footer {
+    padding: 10px 18px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-top: 1px solid var(--k-gray-100);
+  }
+  .context-chip {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--k-purple-light); border-radius: 20px;
+    padding: 4px 10px 4px 8px; font-size: 12px; font-weight: 600;
+    color: var(--k-purple); cursor: default; flex-shrink: 0;
+  }
+  .chip-x { cursor: pointer; color: var(--k-purple-mid); margin-left: 2px; opacity: 0.7; }
+  .chip-x:hover { opacity: 1; }
+  .home-send {
+    margin-left: auto; width: 38px; height: 38px; border-radius: 50%;
+    background: var(--k-purple); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.1s; flex-shrink: 0;
+  }
+  .home-send:hover { background: var(--k-purple-dark); transform: scale(1.05); }
+  .home-send:disabled { background: var(--k-gray-200); cursor: not-allowed; transform: none; }
+
+  .quick-actions {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    justify-content: center; max-width: 600px; margin-bottom: 44px;
+  }
+  .quick-action {
+    padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    border: 1.5px solid var(--k-gray-200); background: #fff;
+    color: var(--k-gray-700); cursor: pointer; transition: all 0.15s; white-space: nowrap;
+  }
+  .quick-action:hover { border-color: var(--k-purple); color: var(--k-purple); background: var(--k-purple-light); }
+
+  /* LESSON START KITS — minimal tiles */
+  .kits-section { width: 100%; max-width: 650px; }
+  .kits-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 0 2px;
+  }
+  .kits-label {
+    font-size: 11.5px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--k-gray-400);
+  }
+  .kits-badge {
+    font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--k-purple) 0%, #7B6EE0 100%);
+    color: white; letter-spacing: 0.04em;
+  }
+  .kits-scroll {
+    display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none;
+  }
+  .kits-scroll::-webkit-scrollbar { display: none; }
+  .kit-tile {
+    min-width: 148px; max-width: 148px;
+    background: #fff; border: 1.5px solid var(--k-gray-200);
+    border-radius: 12px; padding: 13px 12px 12px;
+    cursor: pointer; transition: all 0.18s; position: relative;
+  }
+  .kit-tile:hover {
+    border-color: var(--k-purple); transform: translateY(-2px);
+    box-shadow: 0 5px 18px rgba(91,79,207,0.11);
+  }
+  .kit-tile::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--k-purple) 0%, var(--k-teal) 100%);
+    border-radius: 12px 12px 0 0;
+  }
+  .kit-tile-when {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--k-purple); margin-bottom: 8px;
+  }
+  .kit-tile-emoji { font-size: 20px; margin-bottom: 6px; display: block; }
+  .kit-tile-title {
+    font-size: 12.5px; font-weight: 600; color: var(--k-gray-800); line-height: 1.35;
+    margin-bottom: 4px;
+  }
+  .kit-tile-meta { font-size: 11px; color: var(--k-gray-400); }
+
+  /* ════════════════════════════════
+     PAGE SCREENS (non-home)
+  ════════════════════════════════ */
+  .page-screen {
+    display: flex; flex-direction: column;
+  }
+  .page-header {
+    padding: 24px 32px 0; flex-shrink: 0;
+  }
+  .page-title { font-size: 22px; font-weight: 700; color: var(--k-gray-900); letter-spacing: -0.4px; }
+  .page-sub { font-size: 14px; color: var(--k-gray-500); margin-top: 3px; }
+  .page-body {
+    flex: 1; overflow-y: auto; padding: 20px 32px 32px;
+  }
+  .page-body::-webkit-scrollbar { width: 5px; }
+  .page-body::-webkit-scrollbar-thumb { background: var(--k-gray-300); border-radius: 3px; }
+
+  /* ── Classes page ── */
+  .class-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px; margin-top: 20px;
+  }
+  .class-card {
+    border-radius: 14px; padding: 18px;
+    border: 1.5px solid var(--k-gray-200); cursor: pointer;
+    transition: all 0.18s; background: #fff; position: relative;
+  }
+  .class-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+  .class-card.highlighted {
+    border-color: var(--k-purple);
+    box-shadow: 0 0 0 4px rgba(91,79,207,0.12), 0 6px 20px rgba(91,79,207,0.15);
+    animation: pulse-border 1.5s ease 3;
+  }
+  @keyframes pulse-border {
+    0%,100% { box-shadow: 0 0 0 4px rgba(91,79,207,0.12), 0 6px 20px rgba(91,79,207,0.15); }
+    50% { box-shadow: 0 0 0 8px rgba(91,79,207,0.18), 0 6px 20px rgba(91,79,207,0.2); }
+  }
+  .class-color-bar {
+    height: 4px; border-radius: 2px; margin-bottom: 14px;
+  }
+  .class-period {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; margin-bottom: 4px;
+  }
+  .class-name { font-size: 15px; font-weight: 700; color: var(--k-gray-900); margin-bottom: 2px; }
+  .class-grade { font-size: 12.5px; color: var(--k-gray-500); margin-bottom: 12px; }
+  .class-stats { display: flex; gap: 12px; }
+  .class-stat { font-size: 12px; color: var(--k-gray-500); }
+  .class-stat strong { color: var(--k-gray-800); font-weight: 700; }
+
+  /* ── Curriculum page ── */
+  .curriculum-filters {
+    display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0 4px;
+  }
+  .filter-chip {
+    padding: 5px 12px; border-radius: 16px; font-size: 12.5px; font-weight: 500;
+    border: 1.5px solid var(--k-gray-200); background: #fff; color: var(--k-gray-600);
+    cursor: pointer; transition: all 0.13s;
+  }
+  .filter-chip:hover, .filter-chip.on { border-color: var(--k-purple); color: var(--k-purple); background: var(--k-purple-light); }
+  .curriculum-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .curriculum-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px; border-radius: 12px; border: 1.5px solid var(--k-gray-200);
+    background: #fff; cursor: pointer; transition: all 0.13s;
+  }
+  .curriculum-item:hover { border-color: var(--k-purple); background: var(--k-purple-light); }
+  .curriculum-item-icon {
+    width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+  }
+  .curriculum-item-body { flex: 1; }
+  .curriculum-item-title { font-size: 14px; font-weight: 600; color: var(--k-gray-800); }
+  .curriculum-item-sub { font-size: 12.5px; color: var(--k-gray-500); margin-top: 2px; }
+  .curriculum-item-arrow { color: var(--k-gray-300); }
+
+  /* ── Assignments page ── */
+  .assignment-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+  .assignment-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 13px 16px; border-radius: 12px; border: 1.5px solid var(--k-gray-200);
+    background: #fff; cursor: pointer; transition: all 0.13s;
+  }
+  .assignment-item:hover { border-color: var(--k-gray-300); background: var(--k-gray-50); }
+  .assignment-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .assignment-body { flex: 1; }
+  .assignment-title { font-size: 14px; font-weight: 600; color: var(--k-gray-800); }
+  .assignment-sub { font-size: 12.5px; color: var(--k-gray-500); margin-top: 2px; }
+  .assignment-status {
+    font-size: 11.5px; font-weight: 600; padding: 3px 9px; border-radius: 12px;
+    flex-shrink: 0;
+  }
+  .status-active { background: #EFF6FF; color: var(--k-blue); }
+  .status-grading { background: #FEF3C7; color: #92400E; }
+  .status-done { background: #ECFDF5; color: #065F46; }
+  .status-draft { background: var(--k-gray-100); color: var(--k-gray-500); }
+
+  /* ── Reports page ── */
+  .reports-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 20px; }
+  .report-card {
+    background: #fff; border: 1.5px solid var(--k-gray-200); border-radius: 14px; padding: 18px;
+  }
+  .report-card-label { font-size: 12px; color: var(--k-gray-500); margin-bottom: 6px; font-weight: 500; }
+  .report-card-value { font-size: 30px; font-weight: 800; color: var(--k-gray-900); letter-spacing: -1px; }
+  .report-card-change { font-size: 12px; margin-top: 4px; }
+  .report-card-change.up { color: var(--k-green); }
+  .report-card-change.down { color: var(--k-red); }
+  .standards-section { margin-top: 24px; }
+  .standards-title { font-size: 15px; font-weight: 700; color: var(--k-gray-800); margin-bottom: 14px; }
+  .standard-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .standard-code { font-size: 12px; font-weight: 700; color: var(--k-gray-700); width: 72px; flex-shrink: 0; }
+  .standard-bar-wrap { flex: 1; height: 8px; background: var(--k-gray-100); border-radius: 4px; overflow: hidden; }
+  .standard-bar { height: 100%; border-radius: 4px; transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+  .standard-pct { font-size: 12px; font-weight: 600; color: var(--k-gray-700); width: 32px; text-align: right; flex-shrink: 0; }
+
+  /* ════════════════════════════════
+     CONVERSATION SCREEN
+  ════════════════════════════════ */
+  .convo-body {
+    flex: 1; overflow-y: auto; padding: 24px;
+    display: flex; flex-direction: column; gap: 20px;
+    transition: margin-left 0.3s cubic-bezier(0.4,0,0.2,1);
+  }
+  .convo-body.sidebar-offset { margin-left: var(--sidebar-w); }
+  .convo-body::-webkit-scrollbar { width: 5px; }
+  .convo-body::-webkit-scrollbar-thumb { background: var(--k-gray-300); border-radius: 3px; }
+
+  .msg-row { display: flex; gap: 12px; max-width: 680px; margin: 0 auto; width: 100%; }
+  .msg-row.user { flex-direction: row-reverse; }
+  .msg-icon {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+  .msg-icon.ai { background: linear-gradient(135deg, var(--k-purple) 0%, var(--k-purple-mid) 100%); color: white; }
+  .msg-icon.user { background: var(--k-gray-200); color: var(--k-gray-700); }
+  .msg-bubble {
+    flex: 1; padding: 13px 16px; border-radius: 14px;
+    font-size: 14px; line-height: 1.65; color: var(--k-gray-800);
+  }
+  .msg-bubble.ai { background: #fff; border: 1.5px solid var(--k-gray-200); border-top-left-radius: 4px; }
+  .msg-bubble.user { background: var(--k-purple); color: white; border-top-right-radius: 4px; }
+  .msg-bubble.ai strong { color: var(--k-gray-900); }
+
+  .msg-cards { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .result-card {
+    background: var(--k-gray-50); border: 1.5px solid var(--k-gray-200);
+    border-radius: 10px; padding: 12px 14px; cursor: pointer;
+    transition: all 0.15s; display: flex; gap: 12px; align-items: flex-start;
+  }
+  .result-card:hover { border-color: var(--k-purple); background: var(--k-purple-light); }
+  .result-card-icon {
+    width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 17px;
+  }
+  .result-card-body { flex: 1; }
+  .result-card-title { font-size: 13.5px; font-weight: 600; color: var(--k-gray-800); margin-bottom: 2px; }
+  .result-card-sub { font-size: 12px; color: var(--k-gray-500); }
+  .result-card-arrow { color: var(--k-gray-300); margin-top: 2px; flex-shrink: 0; }
+  .msg-suggestions { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .msg-sugg {
+    padding: 6px 12px; border-radius: 16px; font-size: 12.5px;
+    border: 1.5px solid var(--k-purple-mid); color: var(--k-purple);
+    background: var(--k-purple-light); cursor: pointer; font-weight: 500;
+    transition: all 0.13s;
+  }
+  .msg-sugg:hover { background: var(--k-purple); color: white; }
+
+  .typing-indicator { display: flex; gap: 4px; align-items: center; padding: 3px 0; }
+  .typing-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--k-gray-300);
+    animation: bounce 1.2s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,60%,100% { transform: translateY(0); }
+    30% { transform: translateY(-7px); }
+  }
+
+  /* ════════════════════════════════
+     KIT DETAIL OVERLAY
+  ════════════════════════════════ */
+  .kit-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.22s;
+  }
+  .kit-overlay.open { opacity: 1; pointer-events: all; }
+  .kit-detail {
+    background: #fff; border-radius: 20px;
+    width: 520px; max-height: 84vh; overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+    transform: scale(0.95) translateY(8px);
+    transition: transform 0.25s cubic-bezier(0.34,1.4,0.64,1);
+  }
+  .kit-overlay.open .kit-detail { transform: scale(1) translateY(0); }
+  .kit-detail-header {
+    background: linear-gradient(135deg, var(--k-purple) 0%, #7B6EE0 100%);
+    padding: 24px; border-radius: 20px 20px 0 0; color: white; position: relative;
+  }
+  .kit-detail-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(255,255,255,0.2); display: flex;
+    align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s;
+  }
+  .kit-detail-close:hover { background: rgba(255,255,255,0.35); }
+  .kit-detail-emoji { font-size: 30px; margin-bottom: 10px; }
+  .kit-detail-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .kit-detail-sub { font-size: 13px; opacity: 0.85; }
+  .kit-detail-body { padding: 22px; }
+  .kit-section { margin-bottom: 20px; }
+  .kit-section-title {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.07em; color: var(--k-gray-400); margin-bottom: 10px;
+  }
+  .kit-checklist { display: flex; flex-direction: column; gap: 7px; }
+  .kit-check-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 12px; background: var(--k-gray-50); border-radius: 9px;
+    font-size: 13.5px; color: var(--k-gray-700); border: 1px solid var(--k-gray-200);
+    cursor: pointer; transition: all 0.13s;
+  }
+  .kit-check-item:hover { border-color: var(--k-purple); background: var(--k-purple-light); }
+  .kit-check-item.checked { text-decoration: line-through; color: var(--k-gray-400); }
+  .kit-check-box {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 2px solid var(--k-gray-300); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; transition: all 0.13s;
+  }
+  .kit-check-item.checked .kit-check-box { background: var(--k-green); border-color: var(--k-green); }
+  .kit-link-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; background: var(--k-gray-50); border-radius: 9px;
+    font-size: 13.5px; color: var(--k-purple); border: 1px solid var(--k-gray-200);
+    cursor: pointer; font-weight: 500; transition: all 0.13s; margin-bottom: 7px;
+  }
+  .kit-link-item:hover { border-color: var(--k-purple); background: var(--k-purple-light); }
+  .kit-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kit-standard-tag {
+    padding: 4px 10px; background: var(--k-purple-light); color: var(--k-purple);
+    border-radius: 20px; font-size: 12px; font-weight: 600;
+  }
+  .kit-footer {
+    padding: 14px 22px 22px; border-top: 1px solid var(--k-gray-200);
+    display: flex; gap: 10px;
+  }
+  .kit-btn {
+    padding: 10px 16px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
+    border: none; cursor: pointer; transition: all 0.13s; flex: 1;
+  }
+  .kit-btn.primary { background: var(--k-purple); color: white; }
+  .kit-btn.primary:hover { background: var(--k-purple-dark); }
+  .kit-btn.secondary { background: var(--k-gray-100); color: var(--k-gray-700); }
+  .kit-btn.secondary:hover { background: var(--k-gray-200); }
+
+  /* ════════════════════════════════
+     UTILS
+  ════════════════════════════════ */
+  .fade-up { animation: fadeUp 0.35s ease both; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .notif { position: relative; }
+  .notif-dot {
+    position: absolute; top: -1px; right: -1px;
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--k-amber); border: 2px solid #fff;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo" onclick="goHome()">
+    <div class="nav-logo-icon">
+      <svg width="15" height="15" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    Kiddom
+  </div>
+  <div class="nav-link active" id="nav-home"       onclick="goHome()">Home</div>
+  <div class="nav-link"        id="nav-classes"    onclick="goPage('classes')">Classes</div>
+  <div class="nav-link"        id="nav-curriculum" onclick="goPage('curriculum')">Curriculum</div>
+  <div class="nav-link"        id="nav-assignments" onclick="goPage('assignments')">Assignments</div>
+  <div class="nav-link"        id="nav-reports"    onclick="goPage('reports')">Reports</div>
+  <div class="nav-right">
+    <div class="nav-class-chip">
+      <div class="nav-class-dot"></div>
+      Math · 4th Grade
+    </div>
+    <div class="notif"><div class="avatar">SJ</div><div class="notif-dot"></div></div>
+  </div>
+</nav>
+
+<!-- LOADING BAR -->
+<div class="loading-bar" id="loadingBar"></div>
+
+<!-- PERSISTENT BAR -->
+<div class="pbar" id="pbar">
+  <button class="pbar-history-btn" onclick="toggleSidebar()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+    History
+  </button>
+  <div class="pbar-input-shell" onclick="openSearchOverlay()">
+    <svg class="pbar-input-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <input class="pbar-input" id="pbarInputDisplay" placeholder="Search or ask anything..." readonly onclick="openSearchOverlay()" style="cursor:pointer">
+    <span class="pbar-kbd">⌘K</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      Conversations
+      <div class="sidebar-x" onclick="toggleSidebar()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Today</div>
+      <div class="sidebar-item active">
+        <div class="sidebar-item-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <div class="sidebar-item-title">Plan this week's lessons</div>
+          <div class="sidebar-item-meta">2 min ago · Math 4th</div>
+        </div>
+      </div>
+      <div class="sidebar-item" onclick="loadHistory('fractions')">
+        <div class="sidebar-item-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <div>
+          <div class="sidebar-item-title">Fraction misconceptions</div>
+          <div class="sidebar-item-meta">1 hr ago · Math 4th</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">This week</div>
+      <div class="sidebar-item" onclick="loadHistory('materials')">
+        <div class="sidebar-item-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <div class="sidebar-item-title">What materials do I need?</div>
+          <div class="sidebar-item-meta">Mon · Math 4th</div>
+        </div>
+      </div>
+      <div class="sidebar-item" onclick="loadHistory('practice')">
+        <div class="sidebar-item-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div>
+          <div class="sidebar-item-title">Practice problems for Unit 3</div>
+          <div class="sidebar-item-meta">Mon · Math 4th</div>
+        </div>
+      </div>
+      <div class="sidebar-item" onclick="loadHistory('third')">
+        <div class="sidebar-item-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="sidebar-item-title">Take me to third period</div>
+          <div class="sidebar-item-meta">Tue · Classes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR TOGGLE (convo/page mode) -->
+  <div class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </div>
+
+  <!-- ═══ HOME SCREEN ═══ -->
+  <div class="screen home-screen" id="screen-home">
+    <div class="home-graphic">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5B4FCF" stroke-width="1.8">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6M11 8v6" stroke-width="2.2"/>
+      </svg>
+      <div class="home-star">✦</div>
+      <div class="home-star2">✦</div>
+    </div>
+
+    <h1 class="home-greeting">Good morning, Ms. Johnson!</h1>
+    <p class="home-subtitle">What's on your mind for today's class?</p>
+
+    <div class="home-input-wrap">
+      <div class="home-input-row">
+        <svg class="home-input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <textarea class="home-input" id="homeInput"
+          placeholder="Search curriculum, ask a question, or find resources..."
+          onkeydown="handleHomeKey(event)"
+          oninput="onHomeInput(this)"
+          rows="1"></textarea>
+      </div>
+      <div class="home-input-footer">
+        <div class="context-chip">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Math · 4th Grade
+          <span class="chip-x">×</span>
+        </div>
+        <span style="font-size:12px;color:var(--k-gray-400)">Unit 3 · Fractions</span>
+        <button class="home-send" id="homeSend" onclick="sendFromHome()" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <div class="quick-action" onclick="quickAction('Plan this week\'s lessons')">Plan this week's lessons</div>
+      <div class="quick-action" onclick="quickAction('What materials do I need tomorrow?')">What materials do I need?</div>
+      <div class="quick-action" onclick="quickAction('What misconceptions should I watch for in fractions?')">Common misconceptions</div>
+      <div class="quick-action" onclick="quickAction('Generate practice problems for my students')">Generate practice problems</div>
+      <div class="quick-action" onclick="quickAction('Show me student performance on Unit 3')">Student performance</div>
+      <div class="quick-action" onclick="quickAction('Take me to third period')">Take me to third period</div>
+    </div>
+
+    <!-- LESSON START KITS — minimal tiles -->
+    <div class="kits-section">
+      <div class="kits-header">
+        <span class="kits-label">Lesson Start Kits</span>
+        <span class="kits-badge">✦ Ready for you</span>
+      </div>
+      <div class="kits-scroll">
+        <div class="kit-tile" onclick="openKit('fractions')">
+          <div class="kit-tile-when">Tomorrow</div>
+          <span class="kit-tile-emoji">➗</span>
+          <div class="kit-tile-title">Adding Fractions with Unlike Denominators</div>
+          <div class="kit-tile-meta">U3 · L4 · 45 min</div>
+        </div>
+        <div class="kit-tile" onclick="openKit('number-line')">
+          <div class="kit-tile-when">Monday</div>
+          <span class="kit-tile-emoji">📏</span>
+          <div class="kit-tile-title">Fractions on a Number Line</div>
+          <div class="kit-tile-meta">U3 · L5 · 45 min</div>
+        </div>
+        <div class="kit-tile" onclick="openKit('multiplication')">
+          <div class="kit-tile-when">Tuesday</div>
+          <span class="kit-tile-emoji">✖️</span>
+          <div class="kit-tile-title">Multiplying Fractions</div>
+          <div class="kit-tile-meta">U3 · L6 · 50 min</div>
+        </div>
+        <div class="kit-tile" onclick="openKit('assessment')">
+          <div class="kit-tile-when">Wednesday</div>
+          <span class="kit-tile-emoji">📋</span>
+          <div class="kit-tile-title">Unit 3 Mid-Unit Check</div>
+          <div class="kit-tile-meta">Assessment · 25 min</div>
+        </div>
+        <div class="kit-tile" onclick="openKit('word-problems')">
+          <div class="kit-tile-when">Thursday</div>
+          <span class="kit-tile-emoji">📝</span>
+          <div class="kit-tile-title">Fraction Word Problems</div>
+          <div class="kit-tile-meta">U3 · L7 · 45 min</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CONVERSATION SCREEN ═══ -->
+  <div class="screen page-screen hidden" id="screen-convo" style="flex-direction:column">
+    <div class="convo-body" id="convoBody"></div>
+  </div>
+
+  <!-- ═══ CLASSES SCREEN ═══ -->
+  <div class="screen page-screen hidden" id="screen-classes">
+    <div class="page-header">
+      <div class="page-title">Classes</div>
+      <div class="page-sub">Spring 2026 · 6 classes, 154 students</div>
+    </div>
+    <div class="page-body">
+      <div class="class-grid" id="classGrid">
+        <div class="class-card" id="class-1" onclick="goClassDetail('1st Period')">
+          <div class="class-color-bar" style="background:#5B4FCF"></div>
+          <div class="class-period" style="color:#5B4FCF">1st Period</div>
+          <div class="class-name">Math 4</div>
+          <div class="class-grade">4th Grade</div>
+          <div class="class-stats">
+            <div class="class-stat"><strong>27</strong> students</div>
+            <div class="class-stat"><strong>78%</strong> mastery</div>
+          </div>
+        </div>
+        <div class="class-card" id="class-2" onclick="goClassDetail('2nd Period')">
+          <div class="class-color-bar" style="background:#0EA5A0"></div>
+          <div class="class-period" style="color:#0EA5A0">2nd Period</div>
+          <div class="class-name">Math 4</div>
+          <div class="class-grade">4th Grade</div>
+          <div class="class-stats">
+            <div class="class-stat"><strong>25</strong> students</div>
+            <div class="class-stat"><strong>83%</strong> mastery</div>
+          </div>
+        </div>
+        <div class="class-card" id="class-3" onclick="goClassDetail('3rd Period')">
+          <div class="class-color-bar" style="background:#F59E0B"></div>
+          <div class="class-period" style="color:#B45309">3rd Period</div>
+          <div class="class-name">Math 4</div>
+          <div class="class-grade">4th Grade</div>
+          <div class="class-stats">
+            <div class="class-stat"><strong>28</strong> students</div>
+            <div class="class-stat"><strong>71%</strong> mastery</div>
+          </div>
+        </div>
+        <div class="class-card" id="class-4" onclick="goClassDetail('4th Period')">
+          <div class="class-color-bar" style="background:#3B82F6"></div>
+          <div class="class-period" style="color:#1D4ED8">4th Period</div>
+          <div class="class-name">Math 4</div>
+          <div class="class-grade">4th Grade</div>
+          <div class="class-stats">
+            <div class="class-stat"><strong>26</strong> students</div>
+            <div class="class-stat"><strong>80%</strong> mastery</div>
+          </div>
+        </div>
+        <div class="class-card" id="class-5" onclick="goClassDetail('5th Period')">
+          <div class="class-color-bar" style="background:#10B981"></div>
+          <div class="class-period" style="color:#065F46">5th Period</div>
+          <div class="class-name">ELA 5</div>
+          <div class="class-grade">5th Grade</div>
+          <div class="class-stats">
+            <div class="class-stat"><strong>24</strong> students</div>
+            <div class="class-stat"><strong>86%</strong> mastery</div>
+          </div>
+        </div>
+        <div class="class-card" id="class-6" onclick="goClassDetail('6th Period')">
+          <div class="class-color-bar" style="background:#8B5CF6"></div>
+          <div class="class-period" style="color:#6D28D9">6th Period</div>
+          <div class="class-name">Science 5</div>
+          <div class="class-grade">5th Grade</div>
+          <div class="class-stats">
+            <div class="class-stat"><strong>24</strong> students</div>
+            <div class="class-stat"><strong>74%</strong> mastery</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ CURRICULUM SCREEN ═══ -->
+  <div class="screen page-screen hidden" id="screen-curriculum">
+    <div class="page-header">
+      <div class="page-title">Curriculum</div>
+      <div class="page-sub">Kiddom Math 4 · Spring 2026</div>
+    </div>
+    <div class="page-body">
+      <div class="curriculum-filters">
+        <div class="filter-chip on">All</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">Math 4</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">ELA 5</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">Science 5</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">Unit 3</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">4th Grade</div>
+      </div>
+      <div class="curriculum-list">
+        <div class="curriculum-item">
+          <div class="curriculum-item-icon" style="background:#EBE9FA">📚</div>
+          <div class="curriculum-item-body">
+            <div class="curriculum-item-title">Kiddom Math 4 — Unit 1: Place Value</div>
+            <div class="curriculum-item-sub">6 lessons · Completed</div>
+          </div>
+          <div class="curriculum-item-arrow">›</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-item-icon" style="background:#EBE9FA">📚</div>
+          <div class="curriculum-item-body">
+            <div class="curriculum-item-title">Kiddom Math 4 — Unit 2: Multiplication & Division</div>
+            <div class="curriculum-item-sub">8 lessons · Completed</div>
+          </div>
+          <div class="curriculum-item-arrow">›</div>
+        </div>
+        <div class="curriculum-item" style="border-color:var(--k-purple);background:var(--k-purple-light)">
+          <div class="curriculum-item-icon" style="background:#fff">➗</div>
+          <div class="curriculum-item-body">
+            <div class="curriculum-item-title" style="color:var(--k-purple)">Kiddom Math 4 — Unit 3: Fractions ← Current</div>
+            <div class="curriculum-item-sub">10 lessons · Lesson 4 of 10 · In progress</div>
+          </div>
+          <div class="curriculum-item-arrow" style="color:var(--k-purple)">›</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-item-icon" style="background:#F0FDF4">📐</div>
+          <div class="curriculum-item-body">
+            <div class="curriculum-item-title">Kiddom Math 4 — Unit 4: Geometry</div>
+            <div class="curriculum-item-sub">7 lessons · Upcoming</div>
+          </div>
+          <div class="curriculum-item-arrow">›</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-item-icon" style="background:#EFF6FF">📏</div>
+          <div class="curriculum-item-body">
+            <div class="curriculum-item-title">Kiddom Math 4 — Unit 5: Measurement</div>
+            <div class="curriculum-item-sub">6 lessons · Upcoming</div>
+          </div>
+          <div class="curriculum-item-arrow">›</div>
+        </div>
+        <div class="curriculum-item">
+          <div class="curriculum-item-icon" style="background:#F0FDF4">📖</div>
+          <div class="curriculum-item-body">
+            <div class="curriculum-item-title">Kiddom ELA 5 — Unit 1: Narrative Writing</div>
+            <div class="curriculum-item-sub">5 lessons · In progress</div>
+          </div>
+          <div class="curriculum-item-arrow">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ASSIGNMENTS SCREEN ═══ -->
+  <div class="screen page-screen hidden" id="screen-assignments">
+    <div class="page-header">
+      <div class="page-title">Assignments</div>
+      <div class="page-sub">12 active across all classes</div>
+    </div>
+    <div class="page-body">
+      <div class="curriculum-filters">
+        <div class="filter-chip on">All classes</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">Active</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">Needs grading</div>
+        <div class="filter-chip" onclick="toggleFilter(this)">Draft</div>
+      </div>
+      <div class="assignment-list">
+        <div class="assignment-item">
+          <div class="assignment-dot" style="background:var(--k-green)"></div>
+          <div class="assignment-body">
+            <div class="assignment-title">Unit 3 Exit Ticket — Equivalent Fractions</div>
+            <div class="assignment-sub">Math 4 · All periods · Due today</div>
+          </div>
+          <div class="assignment-status status-grading">Needs grading (22)</div>
+        </div>
+        <div class="assignment-item">
+          <div class="assignment-dot" style="background:var(--k-blue)"></div>
+          <div class="assignment-body">
+            <div class="assignment-title">Fraction Practice Problems — Set 3</div>
+            <div class="assignment-sub">Math 4 · 3rd Period · Due Mon Mar 30</div>
+          </div>
+          <div class="assignment-status status-active">Active</div>
+        </div>
+        <div class="assignment-item">
+          <div class="assignment-dot" style="background:var(--k-amber)"></div>
+          <div class="assignment-body">
+            <div class="assignment-title">Unit 2 Quiz — Multiplication</div>
+            <div class="assignment-sub">Math 4 · All periods · Closed</div>
+          </div>
+          <div class="assignment-status status-done">Graded</div>
+        </div>
+        <div class="assignment-item">
+          <div class="assignment-dot" style="background:var(--k-purple)"></div>
+          <div class="assignment-body">
+            <div class="assignment-title">Narrative Writing: Personal Essay Draft</div>
+            <div class="assignment-sub">ELA 5 · 5th Period · Due Apr 3</div>
+          </div>
+          <div class="assignment-status status-active">Active</div>
+        </div>
+        <div class="assignment-item">
+          <div class="assignment-dot" style="background:var(--k-gray-300)"></div>
+          <div class="assignment-body">
+            <div class="assignment-title">Unit 3 Mid-Unit Check — Fractions</div>
+            <div class="assignment-sub">Math 4 · All periods · Scheduled Apr 2</div>
+          </div>
+          <div class="assignment-status status-draft">Scheduled</div>
+        </div>
+        <div class="assignment-item">
+          <div class="assignment-dot" style="background:var(--k-teal)"></div>
+          <div class="assignment-body">
+            <div class="assignment-title">Number Line Activity</div>
+            <div class="assignment-sub">Math 4 · 1st, 2nd Period · Due Apr 1</div>
+          </div>
+          <div class="assignment-status status-active">Active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ REPORTS SCREEN ═══ -->
+  <div class="screen page-screen hidden" id="screen-reports">
+    <div class="page-header">
+      <div class="page-title">Reports</div>
+      <div class="page-sub">Math 4 · Unit 3 · Week of Mar 24</div>
+    </div>
+    <div class="page-body">
+      <div class="reports-grid">
+        <div class="report-card">
+          <div class="report-card-label">Class avg. mastery</div>
+          <div class="report-card-value">78%</div>
+          <div class="report-card-change up">↑ 4% this week</div>
+        </div>
+        <div class="report-card">
+          <div class="report-card-label">On track</div>
+          <div class="report-card-value">14</div>
+          <div class="report-card-change up">↑ 2 students</div>
+        </div>
+        <div class="report-card">
+          <div class="report-card-label">Need support</div>
+          <div class="report-card-value">5</div>
+          <div class="report-card-change down">↓ 1 from last week</div>
+        </div>
+      </div>
+      <div class="standards-section">
+        <div class="standards-title">Standards Coverage — Unit 3</div>
+        <div class="standard-row">
+          <div class="standard-code">4.NF.A.1</div>
+          <div class="standard-bar-wrap"><div class="standard-bar" style="width:88%;background:var(--k-green)"></div></div>
+          <div class="standard-pct">88%</div>
+        </div>
+        <div class="standard-row">
+          <div class="standard-code">4.NF.A.2</div>
+          <div class="standard-bar-wrap"><div class="standard-bar" style="width:74%;background:var(--k-teal)"></div></div>
+          <div class="standard-pct">74%</div>
+        </div>
+        <div class="standard-row">
+          <div class="standard-code">4.NF.B.3</div>
+          <div class="standard-bar-wrap"><div class="standard-bar" style="width:65%;background:var(--k-amber)"></div></div>
+          <div class="standard-pct">65%</div>
+        </div>
+        <div class="standard-row">
+          <div class="standard-code">4.NF.B.4</div>
+          <div class="standard-bar-wrap"><div class="standard-bar" style="width:42%;background:var(--k-red)"></div></div>
+          <div class="standard-pct">42%</div>
+        </div>
+        <div class="standard-row">
+          <div class="standard-code">4.NF.C.5</div>
+          <div class="standard-bar-wrap"><div class="standard-bar" style="width:0%;background:var(--k-gray-300)"></div></div>
+          <div class="standard-pct">—</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- SEARCH SPOTLIGHT OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="handleOverlayClick(event)">
+  <div class="search-panel">
+    <div class="search-panel-input-row">
+      <svg class="search-panel-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="search-panel-input" id="searchPanelInput"
+        placeholder="Search or ask anything..."
+        oninput="onSearchInput(this)"
+        onkeydown="handleSearchKey(event)">
+      <span class="search-panel-esc" onclick="closeSearchOverlay()">esc</span>
+    </div>
+    <div class="search-panel-body" id="searchPanelBody">
+      <!-- default state -->
+      <div id="searchDefault">
+        <div class="search-section-label">Jump to</div>
+        <div class="search-row" onclick="handleSearchNav('classes')">
+          <div class="search-row-icon" style="background:#EBE9FA">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#5B4FCF" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="search-row-text">
+            <div class="search-row-title">Classes</div>
+            <div class="search-row-sub">6 classes this semester</div>
+          </div>
+          <span class="search-row-tag tag-nav">Navigate</span>
+        </div>
+        <div class="search-row" onclick="handleSearchNav('curriculum')">
+          <div class="search-row-icon" style="background:#EFF6FF">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="search-row-text">
+            <div class="search-row-title">Curriculum</div>
+            <div class="search-row-sub">Unit 3 · Fractions currently active</div>
+          </div>
+          <span class="search-row-tag tag-nav">Navigate</span>
+        </div>
+        <div class="search-row" onclick="handleSearchNav('assignments')">
+          <div class="search-row-icon" style="background:#FEF3C7">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="search-row-text">
+            <div class="search-row-title">Assignments</div>
+            <div class="search-row-sub">22 waiting to be graded</div>
+          </div>
+          <span class="search-row-tag tag-nav">Navigate</span>
+        </div>
+        <div class="search-divider"></div>
+        <div class="search-section-label">Try asking</div>
+        <div class="search-quick-actions">
+          <div class="search-quick featured" onclick="runSearch('Take me to third period')">↗ Take me to third period</div>
+          <div class="search-quick" onclick="runSearch('Plan this week\'s lessons')">Plan this week's lessons</div>
+          <div class="search-quick" onclick="runSearch('What materials do I need?')">What materials do I need?</div>
+          <div class="search-quick" onclick="runSearch('Show me student performance')">Student performance</div>
+          <div class="search-quick" onclick="runSearch('Common misconceptions in fractions')">Misconceptions in fractions</div>
+          <div class="search-quick" onclick="runSearch('Find equivalent fractions resources')">Find resources</div>
+        </div>
+      </div>
+      <!-- results state -->
+      <div id="searchResults" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- KIT DETAIL OVERLAY -->
+<div class="kit-overlay" id="kitOverlay" onclick="closeKitClick(event)">
+  <div class="kit-detail" id="kitDetail"></div>
+</div>
+
+<script>
+// ════════════════════════════════
+// STATE
+// ════════════════════════════════
+let currentScreen = 'home';
+let sidebarOpen = false;
+let convoActive = false;
+
+// ════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════
+function goHome() {
+  showScreen('home');
+  setActiveNav('nav-home');
+}
+function goPage(page) {
+  showScreen(page);
+  setActiveNav('nav-' + page);
+}
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  const el = document.getElementById('screen-' + id);
+  if (el) { el.classList.remove('hidden'); }
+  currentScreen = id;
+
+  // Show/hide persistent bar and sidebar toggle
+  const isHome = id === 'home';
+  document.getElementById('pbar').classList.toggle('visible', !isHome);
+  document.getElementById('sidebarToggle').classList.toggle('visible', !isHome && convoActive);
+
+  if (isHome) {
+    document.getElementById('homeInput').focus();
+  }
+}
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.getElementById(id)?.classList.add('active');
+}
+function showNav(el) {
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  el.classList.add('active');
+}
+function goClassDetail(period) {
+  // Could navigate into class detail — for now just show assistant response
+  closeSearchOverlay();
+  if (currentScreen !== 'classes') goPage('classes');
+  // highlight card
+  setTimeout(() => {
+    document.querySelectorAll('.class-card').forEach(c => c.classList.remove('highlighted'));
+    const num = period.charAt(0);
+    document.getElementById('class-' + num)?.classList.add('highlighted');
+    document.getElementById('class-' + num)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 200);
+}
+
+// ════════════════════════════════
+// HOME INPUT
+// ════════════════════════════════
+function onHomeInput(el) {
+  // auto-grow
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('homeSend').disabled = el.value.trim() === '';
+}
+function handleHomeKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    const val = document.getElementById('homeInput').value.trim();
+    if (val) sendMessage(val);
+  }
+}
+function sendFromHome() {
+  const val = document.getElementById('homeInput').value.trim();
+  if (val) sendMessage(val);
+}
+function quickAction(text) {
+  document.getElementById('homeInput').value = text;
+  onHomeInput(document.getElementById('homeInput'));
+  setTimeout(() => sendMessage(text), 60);
+}
+
+// ════════════════════════════════
+// SEARCH OVERLAY
+// ════════════════════════════════
+function openSearchOverlay() {
+  document.getElementById('searchOverlay').classList.add('open');
+  document.getElementById('searchDefault').style.display = '';
+  document.getElementById('searchResults').style.display = 'none';
+  document.getElementById('searchPanelInput').value = '';
+  setTimeout(() => document.getElementById('searchPanelInput').focus(), 80);
+}
+function closeSearchOverlay() {
+  document.getElementById('searchOverlay').classList.remove('open');
+}
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('searchOverlay')) closeSearchOverlay();
+}
+function handleSearchKey(e) {
+  if (e.key === 'Escape') { closeSearchOverlay(); return; }
+  if (e.key === 'Enter') {
+    const val = document.getElementById('searchPanelInput').value.trim();
+    if (val) runSearch(val);
+  }
+}
+// ⌘K shortcut
+document.addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    if (currentScreen !== 'home') openSearchOverlay();
+  }
+  if (e.key === 'Escape') closeSearchOverlay();
+});
+
+function onSearchInput(el) {
+  const val = el.value.trim().toLowerCase();
+  const defaultEl = document.getElementById('searchDefault');
+  const resultsEl = document.getElementById('searchResults');
+  if (!val) {
+    defaultEl.style.display = '';
+    resultsEl.style.display = 'none';
+    return;
+  }
+  defaultEl.style.display = 'none';
+  resultsEl.style.display = '';
+  resultsEl.innerHTML = getLiveResults(val);
+}
+
+function getLiveResults(q) {
+  const results = [];
+  // navigation intent
+  if (q.includes('third') || q.includes('3rd') || q.includes('period')) {
+    results.push({ type: 'nav', icon: '👥', bg: '#EBE9FA', title: 'Go to 3rd Period — Math 4', sub: '28 students · 71% mastery', tag: 'Navigate', action: "navigateThird()" });
+  }
+  if (q.includes('class') || q.includes('period')) {
+    results.push({ type: 'nav', icon: '👥', bg: '#EBE9FA', title: 'All Classes', sub: '6 classes this semester', tag: 'Navigate', action: "goPage('classes');closeSearchOverlay()" });
+  }
+  if (q.includes('assign')) {
+    results.push({ type: 'nav', icon: '✅', bg: '#FEF3C7', title: 'Assignments', sub: '22 waiting to be graded', tag: 'Navigate', action: "goPage('assignments');closeSearchOverlay()" });
+  }
+  if (q.includes('report') || q.includes('data') || q.includes('performance')) {
+    results.push({ type: 'nav', icon: '📊', bg: '#F0FDF4', title: 'Reports — Unit 3', sub: '78% class avg. mastery', tag: 'Navigate', action: "goPage('reports');closeSearchOverlay()" });
+  }
+  if (q.includes('fraction') || q.includes('nf') || q.includes('unit 3')) {
+    results.push({ type: 'curriculum', icon: '➗', bg: '#EBE9FA', title: 'Unit 3: Fractions — Currently Active', sub: 'Lesson 4 of 10 · Adding Fractions', tag: 'Curriculum', action: "goPage('curriculum');closeSearchOverlay()" });
+  }
+  if (q.includes('material') || q.includes('print') || q.includes('supply')) {
+    results.push({ type: 'ask', icon: '🖨️', bg: '#FEF9EC', title: 'What materials do I need tomorrow?', sub: 'Ask the assistant', tag: 'Ask', action: "runSearch('What materials do I need tomorrow?')" });
+  }
+  // always offer "ask" option
+  results.push({ type: 'ask', icon: '✦', bg: '#EBE9FA', title: `Ask: "${q.length > 40 ? q.slice(0,40)+'…' : q}"`, sub: 'Get an AI answer', tag: 'Ask', action: `runSearch(document.getElementById('searchPanelInput').value)` });
+
+  let html = '<div class="search-section-label">Results</div>';
+  results.forEach(r => {
+    const tagClass = r.type === 'nav' ? 'tag-nav' : r.type === 'curriculum' ? 'tag-curriculum' : 'tag-ask';
+    html += `<div class="search-row" onclick="${r.action}">
+      <div class="search-row-icon" style="background:${r.bg}">${r.icon}</div>
+      <div class="search-row-text">
+        <div class="search-row-title">${r.title}</div>
+        <div class="search-row-sub">${r.sub}</div>
+      </div>
+      <span class="search-row-tag ${tagClass}">${r.tag}</span>
+    </div>`;
+  });
+  return html;
+}
+
+function handleSearchNav(page) {
+  goPage(page);
+  setActiveNav('nav-' + page);
+  closeSearchOverlay();
+}
+
+function navigateThird() {
+  closeSearchOverlay();
+  goPage('classes');
+  setActiveNav('nav-classes');
+  setTimeout(() => {
+    document.querySelectorAll('.class-card').forEach(c => c.classList.remove('highlighted'));
+    const card = document.getElementById('class-3');
+    card?.classList.add('highlighted');
+    card?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 300);
+}
+
+// ════════════════════════════════
+// SEND MESSAGE / CONVERSATION
+// ════════════════════════════════
+function runSearch(query) {
+  closeSearchOverlay();
+  sendMessage(query);
+}
+
+function sendMessage(text) {
+  // Handle navigation intents
+  if (/third period|3rd period/i.test(text)) {
+    showLoading();
+    setTimeout(() => {
+      hideLoading();
+      navigateThird();
+      // Also show a quick assistant note
+      showConvoWithNav(text, '3rd Period');
+    }, 800);
+    return;
+  }
+  // Regular AI response
+  showLoading();
+  setTimeout(() => {
+    hideLoading();
+    openConvoScreen(text);
+  }, 1000);
+}
+
+function showConvoWithNav(query, dest) {
+  convoActive = true;
+  showScreen('convo');
+  setActiveNav('nav-home');
+  document.getElementById('pbar').classList.add('visible');
+  document.getElementById('sidebarToggle').classList.add('visible');
+  // Reset and populate
+  const body = document.getElementById('convoBody');
+  body.innerHTML = '';
+  appendUserMsg(query);
+  setTimeout(() => {
+    const row = document.createElement('div');
+    row.className = 'msg-row fade-up';
+    row.innerHTML = `
+      <div class="msg-icon ai">K</div>
+      <div class="msg-bubble ai">
+        <p>Navigating to <strong>${dest}</strong> now.</p>
+        <div class="msg-cards" style="margin-top:10px">
+          <div class="result-card" onclick="goClassDetail('3rd Period')">
+            <div class="result-card-icon" style="background:#FEF3C7">👥</div>
+            <div class="result-card-body">
+              <div class="result-card-title">3rd Period — Math 4, 4th Grade</div>
+              <div class="result-card-sub">28 students · 71% avg. mastery · Unit 3 in progress</div>
+            </div>
+            <div class="result-card-arrow">›</div>
+          </div>
+        </div>
+        <div class="msg-suggestions">
+          <div class="msg-sugg" onclick="followUp('Show me student performance for 3rd period')">See student performance</div>
+          <div class="msg-sugg" onclick="followUp('Which students in 3rd period need support?')">Who needs support?</div>
+        </div>
+      </div>`;
+    body.appendChild(row);
+    scrollBottom();
+    setTimeout(() => navigateThird(), 400);
+  }, 600);
+}
+
+function openConvoScreen(query) {
+  convoActive = true;
+  showScreen('convo');
+  setActiveNav('nav-home');
+  document.getElementById('pbar').classList.add('visible');
+  document.getElementById('sidebarToggle').classList.add('visible');
+
+  // Clear and start fresh
+  document.getElementById('convoBody').innerHTML = '';
+  document.getElementById('homeInput').value = '';
+  document.getElementById('homeSend').disabled = true;
+
+  appendUserMsg(query);
+  setTimeout(() => appendAIResponse(query), 700);
+}
+
+function appendUserMsg(text) {
+  const body = document.getElementById('convoBody');
+  const row = document.createElement('div');
+  row.className = 'msg-row user fade-up';
+  row.innerHTML = `
+    <div class="msg-icon user">SJ</div>
+    <div class="msg-bubble user">${escHtml(text)}</div>`;
+  body.appendChild(row);
+  showTyping();
+  scrollBottom();
+}
+
+function showTyping() {
+  const body = document.getElementById('convoBody');
+  const row = document.createElement('div');
+  row.className = 'msg-row fade-up';
+  row.id = 'typingRow';
+  row.innerHTML = `
+    <div class="msg-icon ai">K</div>
+    <div class="msg-bubble ai">
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>`;
+  body.appendChild(row);
+  scrollBottom();
+}
+
+function appendAIResponse(query) {
+  document.getElementById('typingRow')?.remove();
+  const body = document.getElementById('convoBody');
+  const row = document.createElement('div');
+  row.className = 'msg-row fade-up';
+  row.innerHTML = `<div class="msg-icon ai">K</div><div class="msg-bubble ai">${getAIResponse(query)}</div>`;
+  body.appendChild(row);
+  scrollBottom();
+}
+
+function followUp(text) {
+  document.getElementById('typingRow')?.remove();
+  appendUserMsg(text);
+  setTimeout(() => appendAIResponse(text), 900);
+}
+
+function scrollBottom() {
+  const b = document.getElementById('convoBody');
+  b.scrollTop = b.scrollHeight;
+}
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function showLoading() { document.getElementById('loadingBar').classList.add('active'); }
+function hideLoading()  { document.getElementById('loadingBar').classList.remove('active'); }
+
+// ════════════════════════════════
+// AI RESPONSES
+// ════════════════════════════════
+function getAIResponse(query) {
+  const q = query.toLowerCase();
+  if (q.includes('plan') || q.includes('week')) return respPlan();
+  if (q.includes('material') || q.includes('need')) return respMaterials();
+  if (q.includes('misconception') || q.includes('watch')) return respMisconceptions();
+  if (q.includes('practice') || q.includes('problem')) return respPractice();
+  if (q.includes('performance') || q.includes('data') || q.includes('student')) return respPerformance();
+  if (q.includes('find') || q.includes('resource') || q.includes('equivalent') || q.includes('lesson')) return respFind();
+  if (q.includes('3rd period') || q.includes('third period')) return respThirdPeriod();
+  return `<p>I found results for <strong>"${escHtml(query)}"</strong>.</p>
+    <div class="msg-suggestions">
+      <div class="msg-sugg" onclick="followUp('Tell me more')">Tell me more</div>
+      <div class="msg-sugg" onclick="followUp('Search curriculum for this')">Search curriculum</div>
+    </div>`;
+}
+
+function respPlan() { return `
+  <p>Here's your week for <strong>Math · 4th Grade, Unit 3</strong>:</p>
+  <div class="msg-cards">
+    <div class="result-card" onclick="openKit('fractions')">
+      <div class="result-card-icon" style="background:#EBE9FA">➗</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Fri (Tomorrow) — Adding Fractions with Unlike Denominators</div>
+        <div class="result-card-sub">U3 · L4 · 45 min · Lesson Start Kit ready ✦</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+    <div class="result-card" onclick="openKit('number-line')">
+      <div class="result-card-icon" style="background:#E0F7F7">📏</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Mon — Fractions on a Number Line</div>
+        <div class="result-card-sub">U3 · L5 · 45 min · Lesson Start Kit ready ✦</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon" style="background:#FEF3C7">✖️</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Tue — Multiplying Fractions</div>
+        <div class="result-card-sub">U3 · L6 · 50 min</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+  </div>
+  <p style="margin-top:12px;font-size:13.5px;color:var(--k-gray-600)">
+    <strong>Note:</strong> 8 students struggled with equivalent fractions on last week's exit ticket — tomorrow's lesson addresses this directly. I'd suggest a 5-min LCM warm-up.
+  </p>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="followUp('What materials do I need tomorrow?')">Materials for tomorrow</div>
+    <div class="msg-sugg" onclick="followUp('Which students need extra support?')">Who needs support?</div>
+    <div class="msg-sugg" onclick="followUp('Show me the warm-up activity')">Show the warm-up</div>
+  </div>`; }
+
+function respMaterials() { return `
+  <p>For <strong>tomorrow's lesson — Adding Fractions with Unlike Denominators</strong>:</p>
+  <div class="msg-cards">
+    <div class="result-card" onclick="openKit('fractions')">
+      <div class="result-card-icon" style="background:#EBE9FA">✦</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Open Lesson Start Kit</div>
+        <div class="result-card-sub">Everything in one place — slides, printables, exit ticket</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon" style="background:#FEF9EC">🖨️</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Fraction Strips — Print × 28 copies</div>
+        <div class="result-card-sub">PDF ready · Tonight if possible</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon" style="background:#ECFDF5">📝</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Exit Ticket — 4.NF.B.3</div>
+        <div class="result-card-sub">Auto-scored in Kiddom</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+  </div>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="openKit('fractions')">Open the full kit</div>
+    <div class="msg-sugg" onclick="followUp('Assign the exit ticket now')">Assign exit ticket</div>
+  </div>`; }
+
+function respMisconceptions() { return `
+  <p>For <strong>fractions with unlike denominators</strong>, top misconceptions I see with your class:</p>
+  <div style="display:flex;flex-direction:column;gap:9px;margin-top:10px">
+    <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-left:3px solid var(--k-amber);border-radius:10px;padding:12px">
+      <div style="font-weight:600;font-size:13.5px;margin-bottom:3px">Adding numerators AND denominators</div>
+      <div style="font-size:13px;color:var(--k-gray-600)">½ + ⅓ = 2/5. <strong>8 of your students</strong> showed this on last week's exit ticket.</div>
+    </div>
+    <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-left:3px solid var(--k-red);border-radius:10px;padding:12px">
+      <div style="font-weight:600;font-size:13.5px;margin-bottom:3px">Not finding a common denominator</div>
+      <div style="font-size:13px;color:var(--k-gray-600)">Most common in <strong>Aisha, Marcus, Devon</strong>.</div>
+    </div>
+    <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-left:3px solid var(--k-purple);border-radius:10px;padding:12px">
+      <div style="font-weight:600;font-size:13.5px;margin-bottom:3px">Not simplifying the result</div>
+      <div style="font-size:13px;color:var(--k-gray-600)">Minor — typically self-corrects with more practice.</div>
+    </div>
+  </div>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="followUp('Show me those 8 students')">See those 8 students</div>
+    <div class="msg-sugg" onclick="followUp('Generate targeted practice for misconception 1')">Targeted practice problems</div>
+    <div class="msg-sugg" onclick="followUp('Find a re-teaching activity')">Re-teaching activity</div>
+  </div>`; }
+
+function respPractice() { return `
+  <p><strong>6 practice problems</strong> for 4.NF.B.3, scaffolded to your class level:</p>
+  <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-radius:12px;padding:16px;margin:10px 0;font-size:14px;line-height:2.1">
+    <div style="font-weight:600;color:var(--k-gray-400);font-size:11px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Scaffold → Challenge</div>
+    <div><strong>1.</strong> ½ + ¼ = ?</div>
+    <div><strong>2.</strong> ⅓ + ⅙ = ?</div>
+    <div><strong>3.</strong> ¾ + ⅛ = ?</div>
+    <div><strong>4.</strong> ⅖ + 3/10 = ?</div>
+    <div style="color:var(--k-purple)"><strong>5. ★</strong> Maya ran ⅔ mile before school and ¾ mile after. How far did she run in total?</div>
+    <div style="color:var(--k-purple)"><strong>6. ★</strong> A recipe needs ⅝ cup flour and ⅓ cup oats. How much in total?</div>
+  </div>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="followUp('Add these to an assignment')">Assign these</div>
+    <div class="msg-sugg" onclick="followUp('Generate 6 more harder problems')">More challenging</div>
+    <div class="msg-sugg" onclick="followUp('Make a scaffolded version for struggling students')">Scaffolded version</div>
+  </div>`; }
+
+function respPerformance() { return `
+  <p>Snapshot for <strong>Math · 4th Grade, Unit 3</strong>:</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:12px 0">
+    <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:26px;font-weight:800;color:var(--k-green)">14</div>
+      <div style="font-size:12px;color:var(--k-gray-500)">On track</div>
+    </div>
+    <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:26px;font-weight:800;color:var(--k-amber)">9</div>
+      <div style="font-size:12px;color:var(--k-gray-500)">Needs practice</div>
+    </div>
+    <div style="background:var(--k-gray-50);border:1.5px solid var(--k-gray-200);border-radius:10px;padding:12px;text-align:center">
+      <div style="font-size:26px;font-weight:800;color:var(--k-red)">5</div>
+      <div style="font-size:12px;color:var(--k-gray-500)">Needs support</div>
+    </div>
+  </div>
+  <p style="font-size:13.5px;color:var(--k-gray-600)">The 5 students needing support share a gap in <strong>equivalent fractions</strong> (Unit 2 prerequisite).</p>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="followUp('Show me those 5 students')">See those 5 students</div>
+    <div class="msg-sugg" onclick="followUp('Build a small group plan for them')">Small group plan</div>
+    <div class="msg-sugg" onclick="followUp('What should the on-track students do next?')">Next for on-track students</div>
+  </div>`; }
+
+function respFind() { return `
+  <p>Best matches for <strong>equivalent fractions</strong>:</p>
+  <div class="msg-cards">
+    <div class="result-card">
+      <div class="result-card-icon" style="background:#EBE9FA">📖</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Equivalent Fractions — Unit 2, Lesson 3</div>
+        <div class="result-card-sub">Kiddom Math 4 · Already taught · Good for review</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon" style="background:#E0F7F7">🎯</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Equivalent Fractions with Models — External</div>
+        <div class="result-card-sub">Video + practice · 4.NF.A.1 · 12 min</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+    <div class="result-card">
+      <div class="result-card-icon" style="background:#FEF9EC">🖨️</div>
+      <div class="result-card-body">
+        <div class="result-card-title">Equivalent Fractions Matching Activity</div>
+        <div class="result-card-sub">Printable · Great for small group</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+  </div>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="followUp('Assign the review lesson to struggling students')">Assign to struggling students</div>
+    <div class="msg-sugg" onclick="followUp('Find more resources like these')">More resources</div>
+  </div>`; }
+
+function respThirdPeriod() { return `
+  <p>Taking you to <strong>3rd Period</strong>.</p>
+  <div class="msg-cards">
+    <div class="result-card" onclick="goClassDetail('3rd Period')">
+      <div class="result-card-icon" style="background:#FEF3C7">👥</div>
+      <div class="result-card-body">
+        <div class="result-card-title">3rd Period — Math 4, 4th Grade</div>
+        <div class="result-card-sub">28 students · 71% avg. mastery · Unit 3 in progress</div>
+      </div>
+      <div class="result-card-arrow">›</div>
+    </div>
+  </div>
+  <div class="msg-suggestions">
+    <div class="msg-sugg" onclick="followUp('Show me performance for 3rd period')">3rd period performance</div>
+    <div class="msg-sugg" onclick="followUp('Who needs support in 3rd period?')">Who needs support?</div>
+  </div>`; }
+
+// ════════════════════════════════
+// SIDEBAR
+// ════════════════════════════════
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+  document.getElementById('convoBody').classList.toggle('sidebar-offset', sidebarOpen);
+}
+function loadHistory(id) {
+  if (sidebarOpen) toggleSidebar();
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  const queries = {
+    fractions: "What misconceptions should I watch for in fractions?",
+    materials: "What materials do I need tomorrow?",
+    practice: "Generate practice problems for Unit 3",
+    third: "Take me to third period"
+  };
+  const q = queries[id] || id;
+  showScreen('convo');
+  setActiveNav('nav-home');
+  document.getElementById('pbar').classList.add('visible');
+  document.getElementById('sidebarToggle').classList.add('visible');
+  document.getElementById('convoBody').innerHTML = '';
+  appendUserMsg(q);
+  setTimeout(() => appendAIResponse(q), 700);
+}
+
+// ════════════════════════════════
+// CURRICULUM FILTER TOGGLE
+// ════════════════════════════════
+function toggleFilter(el) {
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ════════════════════════════════
+// KIT DETAIL
+// ════════════════════════════════
+const kits = {
+  fractions: {
+    emoji:'➗', title:'Adding Fractions with Unlike Denominators', sub:'Unit 3 · Lesson 4 · Friday · ~45 min',
+    standards:['4.NF.B.3','4.NF.B.3a','4.NF.B.3b'],
+    checklist:[
+      {id:'c1',text:'Print fraction strips × 28 copies'},
+      {id:'c2',text:'Print exit ticket × 28 copies'},
+      {id:'c3',text:'Print partner work recording sheet × 14'},
+      {id:'c4',text:'Gather colored markers (1 set per table)'},
+      {id:'c5',text:'Set up projector with lesson slides'},
+    ],
+    links:[
+      {icon:'🖥️',text:'Open Lesson Slides (Unit 3, L4)',sub:'18 slides'},
+      {icon:'🖨️',text:'Fraction Strips — Print PDF',sub:'Fits 28 copies, 1 page'},
+      {icon:'📝',text:'Exit Ticket — 4.NF.B.3',sub:'Auto-scored in Kiddom'},
+      {icon:'🎯',text:'Warm-up: LCM Review (5 min)',sub:'Pre-loaded based on exit ticket data'},
+    ],
+    note:'8 students may need extra scaffolding based on last week\'s data. The warm-up is already queued in your slides.'
+  },
+  'number-line': {
+    emoji:'📏', title:'Fractions on a Number Line', sub:'Unit 3 · Lesson 5 · Monday · ~45 min',
+    standards:['4.NF.A.1','4.NF.B.3'],
+    checklist:[
+      {id:'n1',text:'Print number line worksheet × 28'},
+      {id:'n2',text:'Print exit ticket × 28'},
+      {id:'n3',text:'Gather rulers (1 per student)'},
+    ],
+    links:[
+      {icon:'🖥️',text:'Open Lesson Slides (Unit 3, L5)',sub:'14 slides'},
+      {icon:'🖨️',text:'Number Line Worksheet',sub:'Double-sided, 28 copies'},
+      {icon:'📝',text:'Exit Ticket',sub:'3 questions, auto-scored'},
+    ],
+    note:'This lesson pairs well with the fraction strips from Lesson 4 if students still have them.'
+  },
+  multiplication: {
+    emoji:'✖️', title:'Multiplying Fractions', sub:'Unit 3 · Lesson 6 · Tuesday · ~50 min',
+    standards:['4.NF.B.4','4.NF.B.4a','4.NF.B.4b'],
+    checklist:[
+      {id:'m1',text:'Print area model activity × 28'},
+      {id:'m2',text:'Print recording sheet × 28'},
+      {id:'m3',text:'Print exit ticket × 28'},
+      {id:'m4',text:'Prepare graph paper (optional extension)'},
+      {id:'m5',text:'Set up lesson slides'},
+    ],
+    links:[
+      {icon:'🖥️',text:'Open Lesson Slides (Unit 3, L6)',sub:'20 slides'},
+      {icon:'🖨️',text:'Area Model Activity — Print PDF',sub:'5 materials'},
+      {icon:'📝',text:'Exit Ticket',sub:'Auto-scored'},
+    ],
+    note:'New concept — build in 5 extra minutes for the opening discussion.'
+  },
+  assessment: {
+    emoji:'📋', title:'Unit 3 Mid-Unit Check', sub:'Assessment · Wednesday · ~25 min',
+    standards:['4.NF.A.1','4.NF.B.3','4.NF.B.4'],
+    checklist:[
+      {id:'a1',text:'Schedule in Kiddom (suggested: next Wednesday)'},
+      {id:'a2',text:'Review answer key'},
+      {id:'a3',text:'Decide: online or paper'},
+    ],
+    links:[
+      {icon:'📋',text:'Preview Assessment (10 questions)',sub:'Mix of 4.NF.A and 4.NF.B'},
+      {icon:'🗝️',text:'Answer Key',sub:'Teacher view only'},
+      {icon:'🖨️',text:'Printable Version',sub:'If assigning on paper'},
+    ],
+    note:'Results auto-populate in Class Report within 1 minute of students submitting.'
+  },
+  'word-problems': {
+    emoji:'📝', title:'Fraction Word Problems', sub:'Unit 3 · Lesson 7 · Thursday · ~45 min',
+    standards:['4.NF.B.3','4.NF.B.4'],
+    checklist:[
+      {id:'w1',text:'Print word problem set × 28'},
+      {id:'w2',text:'Print exit ticket × 28'},
+    ],
+    links:[
+      {icon:'🖥️',text:'Open Lesson Slides (Unit 3, L7)',sub:'16 slides'},
+      {icon:'🖨️',text:'Word Problem Set',sub:'28 copies'},
+      {icon:'📝',text:'Exit Ticket',sub:'Auto-scored'},
+    ],
+    note: null
+  }
+};
+
+function openKit(id) {
+  const kit = kits[id];
+  if (!kit) return;
+  const d = document.getElementById('kitDetail');
+  d.innerHTML = `
+    <div class="kit-detail-header">
+      <div class="kit-detail-close" onclick="closeKitDirect()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </div>
+      <div class="kit-detail-emoji">${kit.emoji}</div>
+      <div class="kit-detail-title">${kit.title}</div>
+      <div class="kit-detail-sub">${kit.sub}</div>
+    </div>
+    <div class="kit-detail-body">
+      <div class="kit-section">
+        <div class="kit-section-title">Standards</div>
+        <div class="kit-tags">${kit.standards.map(s=>`<div class="kit-standard-tag">${s}</div>`).join('')}</div>
+      </div>
+      <div class="kit-section">
+        <div class="kit-section-title">Print & Prep Checklist</div>
+        <div class="kit-checklist">
+          ${kit.checklist.map(item=>`
+            <div class="kit-check-item" id="ck-${item.id}" onclick="toggleCheck('ck-${item.id}')">
+              <div class="kit-check-box"></div>${item.text}
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="kit-section">
+        <div class="kit-section-title">Materials & Links</div>
+        ${kit.links.map(l=>`
+          <div class="kit-link-item">
+            <span style="font-size:18px">${l.icon}</span>
+            <div><div>${l.text}</div><div style="font-size:11.5px;color:var(--k-gray-400);font-weight:400">${l.sub}</div></div>
+            <svg style="margin-left:auto;flex-shrink:0;color:var(--k-purple-mid)" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+          </div>`).join('')}
+      </div>
+      ${kit.note ? `<div style="background:var(--k-purple-light);border-left:3px solid var(--k-purple);border-radius:8px;padding:12px;font-size:13px;color:var(--k-purple-dark)"><strong>✦ Kiddom tip:</strong> ${kit.note}</div>` : ''}
+    </div>
+    <div class="kit-footer">
+      <button class="kit-btn secondary" onclick="closeKitDirect()">Close</button>
+      <button class="kit-btn primary" onclick="askKit('${kit.title}')">Ask about this lesson</button>
+    </div>`;
+  document.getElementById('kitOverlay').classList.add('open');
+}
+function toggleCheck(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('checked');
+  const box = el.querySelector('.kit-check-box');
+  if (el.classList.contains('checked')) {
+    box.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
+    box.style.cssText = 'background:var(--k-green);border-color:var(--k-green)';
+  } else {
+    box.innerHTML = ''; box.style.cssText = '';
+  }
+}
+function closeKitDirect() { document.getElementById('kitOverlay').classList.remove('open'); }
+function closeKitClick(e) { if (e.target === document.getElementById('kitOverlay')) closeKitDirect(); }
+function askKit(title) {
+  closeKitDirect();
+  const q = `Tell me more about the lesson: ${title}`;
+  if (!convoActive) { sendMessage(q); }
+  else { appendUserMsg(q); setTimeout(() => appendAIResponse(q), 900); }
+}
+</script>
+</body>
+</html>
